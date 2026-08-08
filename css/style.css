@@ -13,10 +13,10 @@
   --forest-soft:  #24493650;
   --river:        #4d9abe;
   --river-light:  #7dbad6;
-  --gold:         #c9b57b;
-  --gold-light:   #f2dcab;
-  --gold-mid:     #b39a63;
-  --gold-shadow:  #8a6e3c;
+  --gold:         #d8bd75;
+  --gold-light:   #f3dfaa;
+  --gold-mid:     #c5a45b;
+  --gold-shadow:  #8c6d34;
   --olive:        #4a5734;  /* Palm Olive, dùng cho chữ nhãn và icon trên nền sáng */
   --warm-stone:   #a6927d;
   --cream:        #f5f2ea;
@@ -182,16 +182,19 @@ p strong{color:var(--ink);}
 /* ============ BUTTONS ============ */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;
-  padding:.9rem 1.8rem;border-radius:2px;font-weight:600;font-size:.92rem;
-  border:1px solid transparent;transition:all .25s ease;cursor:pointer;
+  padding:.9rem 1.85rem;border-radius:2px;font-weight:600;font-size:.92rem;
+  border:1px solid transparent;transition:background .28s ease, border-color .28s ease, color .28s ease, transform .28s ease, box-shadow .28s ease;cursor:pointer;
   letter-spacing:.02em;font-family:var(--font-body);
 }
-.btn-gold{background:var(--gold);color:var(--forest);}
-.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);}
-.btn-outline{border-color:rgba(255,255,255,.6);color:#fff;background:rgba(10,18,14,.25);backdrop-filter:blur(6px);}
-.btn-outline:hover{background:rgba(255,255,255,.14);}
-.btn-ghost{border-color:var(--forest);color:var(--forest);}
-.btn-ghost:hover{background:var(--forest);color:var(--cream);}
+.btn-gold{
+  background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 56%, var(--gold-mid) 100%);
+  border-color:rgba(243,223,170,.72);color:var(--forest);box-shadow:0 10px 26px rgba(10,18,6,.18);
+}
+.btn-gold:hover{background:var(--forest);border-color:var(--gold-light);color:var(--gold-light);transform:translateY(-2px);box-shadow:0 14px 34px rgba(10,18,6,.24);}
+.btn-outline{border-color:rgba(243,223,170,.72);color:#fff;background:rgba(10,18,14,.18);backdrop-filter:blur(6px);}
+.btn-outline:hover{background:var(--gold);border-color:var(--gold);color:var(--forest);transform:translateY(-2px);}
+.btn-ghost{border-color:var(--gold-light);color:#fff;background:transparent;}
+.btn-ghost:hover{background:var(--gold);border-color:var(--gold);color:var(--forest);transform:translateY(-2px);}
 .btn-block{width:100%;}
 
 /* ============ HEADER ============ */
@@ -384,7 +387,7 @@ p strong{color:var(--ink);}
   padding:.7rem 1.5rem;border-radius:30px;cursor:pointer;font-family:var(--font-body);
   font-size:.9rem;transition:all .25s ease;
 }
-.tab-btn.is-active,.tab-btn:hover{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.tab-btn.is-active,.tab-btn:hover{background:linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 62%, var(--gold-mid) 100%);color:var(--forest);border-color:var(--gold);box-shadow:0 10px 24px rgba(0,0,0,.18);transform:translateY(-1px);}
 .tab-panels{position:relative;}
 .tab-panel{display:none;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
 .tab-panel.is-active{display:grid;animation:fadeUp .5s ease;}
