@@ -88,19 +88,21 @@ if (floatingActions && overviewBanner) {
   }).observe(overviewBanner);
 }
 
-// ===== Lightbox (gallery + award photos) =====
+// ===== Lightbox (gallery + award photos + location & masterplan) =====
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const lightboxClose = document.getElementById('lightboxClose');
 const openLightbox = (e) => {
-  const img = e.target.closest('img');
+  const container = e.target.closest('.zoomable-image') || e.target.closest('img');
+  const img = container ? (container.tagName.toLowerCase() === 'img' ? container : container.querySelector('img')) : null;
   if (!img) return;
   lightboxImg.src = img.dataset.full || img.src;
   lightboxImg.alt = img.alt;
   lightbox.classList.add('is-active');
 };
-['galleryGrid', 'awardShowcase'].forEach((id) => {
-  document.getElementById(id).addEventListener('click', openLightbox);
+['galleryGrid', 'awardShowcase', 'locationImageWrap', 'masterplanImageWrap'].forEach((id) => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('click', openLightbox);
 });
 lightboxClose.addEventListener('click', () => lightbox.classList.remove('is-active'));
 lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('is-active'); });
