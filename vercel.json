@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/chinh-sach-bao-mat", "destination": "/chinh-sach-bao-mat.html" },
+    { "source": "/dieu-khoan-su-dung", "destination": "/dieu-khoan-su-dung.html" }
+  ]
+}
