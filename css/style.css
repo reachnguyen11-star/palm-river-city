@@ -656,3 +656,44 @@ p strong{color:var(--ink);}
   }
   .amenity-photo-grid{grid-template-columns:1fr;}
 }
+
+/* ============ TRANG CẢM ƠN (cam-on.html) ============ */
+.thanks-body{background:var(--forest);}
+.thanks{
+  min-height:100vh;display:flex;align-items:center;padding:8rem 0 4rem;
+  background-image:radial-gradient(circle at 50% 0%, var(--forest-2), var(--forest) 65%);
+}
+.thanks-inner{max-width:760px;text-align:center;}
+.thanks-check{color:var(--gold);margin:0 auto 1.8rem;width:64px;}
+.thanks-check svg{width:100%;height:auto;}
+.thanks-title{
+  color:#fff;font-size:clamp(1.7rem,3.4vw,2.6rem);text-transform:uppercase;
+  letter-spacing:.02em;line-height:1.2;margin:.4rem 0 1.1rem;
+}
+.thanks-sub{color:#cdd8cf;font-size:1rem;max-width:560px;margin:0 auto 3rem;}
+
+.thanks-steps{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;
+  text-align:left;margin-bottom:3rem;
+}
+.thanks-step{
+  border-top:1px solid rgba(242,220,171,.3);padding-top:1.1rem;
+}
+.thanks-step-num{
+  display:block;font-family:var(--font-display);font-size:1.3rem;
+  color:var(--gold);margin-bottom:.5rem;
+}
+.thanks-step p{color:#cdd8cf;font-size:.9rem;line-height:1.5;}
+.thanks-step strong{color:#fff;}
+
+.thanks-urgent{color:var(--gold-light);font-size:.95rem;margin-bottom:1.2rem;}
+.thanks-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;}
+.thanks-note{font-size:.8rem;color:#93a08d;}
+.thanks-note strong{color:#cdd8cf;}
+
+@media (max-width: 780px){
+  .thanks{padding:6.5rem 0 3rem;}
+  .thanks-steps{grid-template-columns:1fr;gap:1.2rem;}
+  .thanks-actions{flex-direction:column;}
+  .thanks-actions .btn{width:100%;}
+}

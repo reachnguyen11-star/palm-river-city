@@ -138,6 +138,17 @@ function sendLeadToCRM(payload) {
   }).catch(() => {});
 }
 
+// Trang cảm ơn. MGID và SmartAds tính chuyển đổi theo URL đích, nên mọi form
+// đăng ký thành công đều phải dẫn về đây; pixel chuyển đổi nằm sẵn trong đó.
+const THANK_YOU_URL = 'cam-on.html';
+
+// Chuyển sang trang cảm ơn sau khi đã gửi lead đi.
+// LeadHub dùng fetch keepalive nên request vẫn hoàn tất dù trang đang rời đi,
+// nhưng vẫn chờ một nhịp ngắn để chắc chắn request kịp rời khỏi trình duyệt.
+function goToThankYou() {
+  setTimeout(() => { window.location.href = THANK_YOU_URL; }, 600);
+}
+
 // ===== Contact form =====
 const contactForm = document.getElementById('contactForm');
 const formSuccess = document.getElementById('formSuccess');
@@ -153,8 +164,8 @@ contactForm.addEventListener('submit', (e) => {
   });
 
   formSuccess.classList.add('is-active');
-  contactForm.reset();
   formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  goToThankYou();
 });
 
 // ===== Goal cards (2 nhóm khách) preselect the contact form's "need" field =====
@@ -231,7 +242,7 @@ docForm.addEventListener('submit', (e) => {
 
   docSuccess.classList.add('is-active');
   docForm.querySelector('button').disabled = true;
-  setTimeout(closeDocPopup, 2200);
+  goToThankYou();
 });
 
 // Auto-trigger once per session: after a delay, or at ~45% scroll depth, whichever comes first.
