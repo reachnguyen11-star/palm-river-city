@@ -52,7 +52,7 @@ var SHEET_NAME = 'PALM RIVER OUT';
  * cột 1 là "id", cột 18 là "full_name", cột 19 là "phone", nhưng kiểm tra
  * 776 dòng thực tế cho thấy cột 18 và 19 trống hoàn toàn, còn dữ liệu nằm ở:
  *
- *    cột 1  = Ngày          cột 4 = Tên quảng cáo / nguồn
+ *    cột 1  = Ngày          cột 4 = Link chuyển đổi (trang khách gửi form)
  *    cột 2  = Họ tên        cột 7 = Status
  *    cột 3  = Số điện thoại cột 8 = PHẢN HỒI 1 (sale ghi chú)
  *    cột 20-26 = LeadHub dùng làm cột hệ thống (SKIPPED, PUSHED, ...)
@@ -64,7 +64,9 @@ var COL = {
   NGAY: 1,
   HO_TEN: 2,
   SO_DIEN_THOAI: 3,
-  NGUON: 4,
+  // Cột "ad_name": chứa link trang khách bấm gửi form, kèm sẵn utm_source,
+  // utm_campaign, fbclid trên đường dẫn nên tự nó đã cho biết nguồn quảng cáo.
+  LINK_CHUYEN_DOI: 4,
   STATUS: 7,
   LOAI_CAN: 17   // cột tên sẵn "anh/chị_quan_tâm_loại_căn_nào?", đang trống 100%
 };
@@ -126,10 +128,6 @@ function doPost(e) {
     // Ghi từng ô theo đúng vị trí thật, không dùng appendRow với mảng đủ 26 phần tử,
     // để không đụng vào các cột 20-26 mà LeadHub đang dùng.
     var row = nextRow_(sheet);
-    var nguon = 'Website Palm River';
-    if (data.source) nguon += ' - ' + data.source;
-    if (data.utm_source) nguon += ' (' + data.utm_source + ')';
-
     var phone = String(data.phone || '').trim();
 
     sheet.getRange(row, COL.NGAY).setValue(timestamp);
@@ -137,7 +135,7 @@ function doPost(e) {
     // Dấu nháy đơn đầu chuỗi buộc Sheets lưu dạng text, giữ nguyên số 0 đầu.
     // Đã thử setNumberFormat('@') nhưng ô bị bỏ trống, nên dùng cách này.
     sheet.getRange(row, COL.SO_DIEN_THOAI).setValue(phone ? "'" + phone : '');
-    sheet.getRange(row, COL.NGUON).setValue(nguon);
+    sheet.getRange(row, COL.LINK_CHUYEN_DOI).setValue(data.page_url || '');
     sheet.getRange(row, COL.STATUS).setValue('Mới');
     sheet.getRange(row, COL.LOAI_CAN).setValue(data.unit_type || data.need || '');
 
