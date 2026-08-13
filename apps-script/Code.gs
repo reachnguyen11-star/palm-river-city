@@ -85,6 +85,35 @@ function getSheet_() {
   return sheet;
 }
 
+/**
+ * Tìm dòng trống kế tiếp của khối hồ sơ khách.
+ *
+ * KHÔNG dùng sheet.getLastRow(): tab này chứa hai khối dữ liệu chồng nhau.
+ * Hồ sơ khách thật nằm ở cột 1-8 và kết thúc quanh dòng 20, còn LeadHub ghi
+ * nhật ký hệ thống ở cột 20-26 kéo dài tới dòng 777. getLastRow() trả về 777
+ * nên lead mới bị đẩy xuống dòng 778, cách khối dữ liệu thật một khoảng trống
+ * hơn 750 dòng.
+ *
+ * Vì vậy chỉ dò trên các cột mà riêng hồ sơ khách mới dùng (ngày, họ tên,
+ * số điện thoại), LeadHub không bao giờ ghi vào đó.
+ */
+function nextRow_(sheet) {
+  var cols = [COL.NGAY, COL.HO_TEN, COL.SO_DIEN_THOAI];
+  var maxRows = sheet.getMaxRows();
+  var last = 1; // tối thiểu là dòng tiêu đề
+
+  cols.forEach(function (c) {
+    var vals = sheet.getRange(1, c, maxRows, 1).getValues();
+    for (var i = vals.length - 1; i >= 0; i--) {
+      if (String(vals[i][0]).trim() !== '') {
+        if (i + 1 > last) last = i + 1;
+        break;
+      }
+    }
+  });
+  return last + 1;
+}
+
 function doPost(e) {
   // Khoá lại để hai lead gửi cùng lúc không ghi đè nhau.
   var lock = LockService.getScriptLock();
@@ -96,7 +125,7 @@ function doPost(e) {
 
     // Ghi từng ô theo đúng vị trí thật, không dùng appendRow với mảng đủ 26 phần tử,
     // để không đụng vào các cột 20-26 mà LeadHub đang dùng.
-    var row = sheet.getLastRow() + 1;
+    var row = nextRow_(sheet);
     var nguon = 'Website Palm River';
     if (data.source) nguon += ' - ' + data.source;
     if (data.utm_source) nguon += ' (' + data.utm_source + ')';
