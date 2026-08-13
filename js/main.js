@@ -124,10 +124,9 @@ tabBtns.forEach(btn => {
 // Lead đã được gửi song song về LeadHub bằng đoạn mã ở cuối index.html.
 // Đây là đường thứ hai, ghi thẳng vào Google Sheet của Aureal.
 //
-// >>> DÁN URL WEB APP TỪ APPS SCRIPT VÀO ĐÂY <<<
-// Hướng dẫn lấy URL: xem đầu file apps-script/Code.gs
-// URL có dạng: https://script.google.com/macros/s/AKfy....../exec
-const GOOGLE_SCRIPT_URL = '';
+// URL Web App của Apps Script, ghi vào tab "PALM RIVER" của sheet CRM.
+// Muốn đổi: xem hướng dẫn deploy ở đầu file apps-script/Code.gs
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMfPxi4VoGmyzk2kFfSmXjMeBSpajotvYrshgb5WcbFMIbARB2_xEBfAQMHgiMI3cUBQ/exec';
 
 function sendLeadToCRM(payload) {
   if (!GOOGLE_SCRIPT_URL) {
