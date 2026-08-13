@@ -2,10 +2,22 @@
  * Palm River — nhận lead từ website và ghi vào Google Sheet CRM của Aureal.
  *
  * Sheet:  1pijqWp4h0g7QFs6Fnt1tXlkSvnFfoZj6e6v0B78SlCQ
- * Tab:    "PALM RIVER" — script tự tạo nếu chưa có
+ * Tab:    "PALM RIVER OUT" (tab có sẵn, script không tự tạo)
  *
- * ============================ CÁCH DEPLOY ============================
- * Làm 1 lần, khoảng 2 phút. Bước 3 và 5 bắt buộc phải đúng, sai là không chạy.
+ * ===================== CẬP NHẬT CODE ĐÃ DEPLOY =====================
+ * Web App đã deploy rồi, URL giữ nguyên, chỉ cần cập nhật code:
+ *
+ * 1. Mở Google Sheet -> "Extensions" -> "Apps Script"
+ * 2. Xoá hết code cũ, dán TOÀN BỘ file này vào, Ctrl+S
+ * 3. Chọn hàm "testGhiThu" ở thanh trên -> bấm Run -> mở tab PALM RIVER OUT
+ *    kiểm tra dòng test đã vào đúng cột chưa
+ * 4. "Deploy" -> "Manage deployments" -> bấm bút chì (Edit) ->
+ *    Version: chọn "New version" -> bấm "Deploy"
+ *    KHÔNG tạo deployment mới, làm vậy sẽ ra URL khác.
+ * ====================================================================
+ *
+ * ==================== DEPLOY LẦN ĐẦU (đã làm xong) ====================
+ * Giữ lại để tham khảo khi dựng cho dự án khác.
  *
  * 1. Mở Google Sheet ở trên -> menu "Extensions" (Tiện ích mở rộng) -> "Apps Script"
  * 2. Xoá hết code mẫu trong Code.gs, dán TOÀN BỘ file này vào, bấm lưu (Ctrl+S)
@@ -31,40 +43,45 @@
 
 var SPREADSHEET_ID = '1pijqWp4h0g7QFs6Fnt1tXlkSvnFfoZj6e6v0B78SlCQ';
 
-// Ghi vào tab riêng của Palm River, không dùng chung tab lead Facebook.
-// Tab dùng chung có cột kiểu Facebook Lead Ads (ad_id, adset_id, campaign_id...)
-// không áp dụng cho lead từ website, ghi vào đó sẽ để trống quá nửa số cột.
-// Chưa có tab này thì script tự tạo kèm tiêu đề.
-var SHEET_NAME = 'PALM RIVER';
+var SHEET_NAME = 'PALM RIVER OUT';
 
-var HEADER = [
-  'Thời gian', 'Nguồn form', 'Họ tên', 'Số điện thoại', 'Email',
-  'Loại căn quan tâm', 'Ngân sách', 'utm_source', 'utm_campaign',
-  'Trang gửi', 'Trạng thái', 'Ghi chú'
-];
+/**
+ * CẢNH BÁO VỀ CỘT — đọc trước khi sửa.
+ *
+ * Dòng tiêu đề của tab này KHÔNG khớp với dữ liệu bên dưới. Tiêu đề ghi
+ * cột 1 là "id", cột 18 là "full_name", cột 19 là "phone", nhưng kiểm tra
+ * 776 dòng thực tế cho thấy cột 18 và 19 trống hoàn toàn, còn dữ liệu nằm ở:
+ *
+ *    cột 1  = Ngày          cột 4 = Tên quảng cáo / nguồn
+ *    cột 2  = Họ tên        cột 7 = Status
+ *    cột 3  = Số điện thoại cột 8 = PHẢN HỒI 1 (sale ghi chú)
+ *    cột 20-26 = LeadHub dùng làm cột hệ thống (SKIPPED, PUSHED, ...)
+ *
+ * Vì vậy phải ghi theo DỮ LIỆU THẬT, không theo tiêu đề. Ghi theo tiêu đề
+ * thì tên và số điện thoại rơi vào cột 18-19, nơi không ai nhìn.
+ */
+var COL = {
+  NGAY: 1,
+  HO_TEN: 2,
+  SO_DIEN_THOAI: 3,
+  NGUON: 4,
+  STATUS: 7,
+  LOAI_CAN: 17   // cột tên sẵn "anh/chị_quan_tâm_loại_căn_nào?", đang trống 100%
+};
 
 /** Mở URL trên trình duyệt để kiểm tra script còn sống. */
 function doGet() {
   return ContentService.createTextOutput('Palm River lead endpoint OK');
 }
 
-/** Lấy tab PALM RIVER, chưa có thì tạo mới kèm dòng tiêu đề. */
+/**
+ * Lấy tab PALM RIVER OUT. KHÔNG tự tạo nếu thiếu: tab này đã tồn tại sẵn,
+ * nếu không tìm thấy nghĩa là tên bị gõ sai hoặc tab bị đổi tên, khi đó
+ * báo lỗi rõ ràng còn hơn âm thầm tạo một tab rỗng thứ hai.
+ */
 function getSheet_() {
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  var sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME, 0);
-    sheet.appendRow(HEADER);
-    sheet.getRange(1, 1, 1, HEADER.length)
-      .setFontWeight('bold')
-      .setBackground('#0b1605')
-      .setFontColor('#f3dfaa');
-    sheet.setFrozenRows(1);
-    sheet.setColumnWidth(1, 150);  // thời gian
-    sheet.setColumnWidth(3, 170);  // họ tên
-    sheet.setColumnWidth(4, 130);  // số điện thoại
-    sheet.setColumnWidth(10, 260); // trang gửi
-  }
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);
+  if (!sheet) throw new Error('Không tìm thấy tab "' + SHEET_NAME + '" trong sheet');
   return sheet;
 }
 
@@ -77,20 +94,22 @@ function doPost(e) {
     var sheet = getSheet_();
     var timestamp = Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd HH:mm:ss');
 
-    sheet.appendRow([
-      timestamp,                          // Thời gian
-      data.source || 'Website',           // Nguồn form: form liên hệ hay popup
-      data.name || '',                    // Họ tên
-      "'" + (data.phone || ''),           // Số điện thoại: dấu ' để Sheets giữ số 0 đầu
-      data.email || '',                   // Email
-      data.unit_type || data.need || '',  // Loại căn quan tâm
-      data.budget || '',                  // Ngân sách
-      data.utm_source || '',              // utm_source
-      data.utm_campaign || '',            // utm_campaign
-      data.page_url || '',                // Trang gửi
-      'Mới',                              // Trạng thái, để sale tự cập nhật
-      ''                                  // Ghi chú
-    ]);
+    // Ghi từng ô theo đúng vị trí thật, không dùng appendRow với mảng đủ 26 phần tử,
+    // để không đụng vào các cột 20-26 mà LeadHub đang dùng.
+    var row = sheet.getLastRow() + 1;
+    var nguon = 'Website Palm River';
+    if (data.source) nguon += ' - ' + data.source;
+    if (data.utm_source) nguon += ' (' + data.utm_source + ')';
+
+    sheet.getRange(row, COL.NGAY).setValue(timestamp);
+    sheet.getRange(row, COL.HO_TEN).setValue(data.name || '');
+    // Đặt định dạng text để Sheets không ăn mất số 0 đầu số điện thoại.
+    sheet.getRange(row, COL.SO_DIEN_THOAI)
+      .setNumberFormat('@')
+      .setValue(data.phone || '');
+    sheet.getRange(row, COL.NGUON).setValue(nguon);
+    sheet.getRange(row, COL.STATUS).setValue('Mới');
+    sheet.getRange(row, COL.LOAI_CAN).setValue(data.unit_type || data.need || '');
 
     return ContentService
       .createTextOutput(JSON.stringify({ result: 'success' }))
