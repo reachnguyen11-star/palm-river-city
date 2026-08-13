@@ -120,22 +120,41 @@ tabBtns.forEach(btn => {
   });
 });
 
-// ===== CRM push (shared by the inline contact form and the lead-magnet popup) =====
-// Dán URL Web App (từ Apps Script, xem hướng dẫn trong apps-script/Code.gs) vào đây:
+// ===== Đẩy lead về Google Sheet CRM =====
+// Lead đã được gửi song song về LeadHub bằng đoạn mã ở cuối index.html.
+// Đây là đường thứ hai, ghi thẳng vào Google Sheet của Aureal.
+//
+// >>> DÁN URL WEB APP TỪ APPS SCRIPT VÀO ĐÂY <<<
+// Hướng dẫn lấy URL: xem đầu file apps-script/Code.gs
+// URL có dạng: https://script.google.com/macros/s/AKfy....../exec
 const GOOGLE_SCRIPT_URL = '';
 
 function sendLeadToCRM(payload) {
   if (!GOOGLE_SCRIPT_URL) {
-    console.warn('Chưa cấu hình GOOGLE_SCRIPT_URL trong js/main.js, lead sẽ không được gửi đi.');
+    console.warn('[Sheet] Chưa cấu hình GOOGLE_SCRIPT_URL trong js/main.js, lead KHÔNG vào Google Sheet. Lead vẫn đi về LeadHub bình thường.');
     return;
   }
-  // no-cors: Apps Script không trả CORS header, nên gửi kiểu "fire-and-forget".
+
+  // Gắn kèm nguồn quảng cáo để đối chiếu được với dữ liệu bên Meta/MGID.
+  const q = new URLSearchParams(location.search);
+  const body = {
+    ...payload,
+    page_url: location.href,
+    utm_source: q.get('utm_source') || '',
+    utm_campaign: q.get('utm_campaign') || '',
+  };
+
+  // keepalive: request vẫn hoàn tất kể cả khi trang chuyển sang trang cảm ơn.
+  // no-cors: Apps Script không trả CORS header nên không đọc được phản hồi,
+  // đây là gửi kiểu "fire-and-forget", lỗi phía Sheet sẽ không hiện ở Console.
   fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
+    keepalive: true,
   }).catch(() => {});
+  console.log('[Sheet] đã gửi lead:', body.phone);
 }
 
 // Trang cảm ơn. MGID và SmartAds tính chuyển đổi theo URL đích, nên mọi form
@@ -158,6 +177,7 @@ contactForm.addEventListener('submit', (e) => {
 
   const formData = new FormData(contactForm);
   sendLeadToCRM({
+    source: 'Form liên hệ',
     name: formData.get('name'),
     phone: formData.get('phone'),
     unit_type: formData.get('unit_type'),
@@ -234,6 +254,7 @@ docForm.addEventListener('submit', (e) => {
 
   const formData = new FormData(docForm);
   sendLeadToCRM({
+    source: 'Popup nhận tài liệu',
     name: formData.get('name'),
     phone: formData.get('phone'),
     email: formData.get('email'),
