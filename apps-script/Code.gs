@@ -101,18 +101,29 @@ function doPost(e) {
     if (data.source) nguon += ' - ' + data.source;
     if (data.utm_source) nguon += ' (' + data.utm_source + ')';
 
+    var phone = String(data.phone || '').trim();
+
     sheet.getRange(row, COL.NGAY).setValue(timestamp);
     sheet.getRange(row, COL.HO_TEN).setValue(data.name || '');
-    // Đặt định dạng text để Sheets không ăn mất số 0 đầu số điện thoại.
-    sheet.getRange(row, COL.SO_DIEN_THOAI)
-      .setNumberFormat('@')
-      .setValue(data.phone || '');
+    // Dấu nháy đơn đầu chuỗi buộc Sheets lưu dạng text, giữ nguyên số 0 đầu.
+    // Đã thử setNumberFormat('@') nhưng ô bị bỏ trống, nên dùng cách này.
+    sheet.getRange(row, COL.SO_DIEN_THOAI).setValue(phone ? "'" + phone : '');
     sheet.getRange(row, COL.NGUON).setValue(nguon);
     sheet.getRange(row, COL.STATUS).setValue('Mới');
     sheet.getRange(row, COL.LOAI_CAN).setValue(data.unit_type || data.need || '');
 
+    SpreadsheetApp.flush();
+
+    // Đọc lại số điện thoại vừa ghi. Lead không có số thì vô dụng, nên nếu ô
+    // trống phải báo lỗi thật to thay vì trả về "success" rồi mất lead âm thầm.
+    var ghiDuoc = String(sheet.getRange(row, COL.SO_DIEN_THOAI).getDisplayValue()).trim();
+    if (phone && !ghiDuoc) {
+      throw new Error('Ghi số điện thoại thất bại tại dòng ' + row +
+                      '. Kiểm tra cột ' + COL.SO_DIEN_THOAI + ' có bị khoá hoặc bảo vệ không.');
+    }
+
     return ContentService
-      .createTextOutput(JSON.stringify({ result: 'success' }))
+      .createTextOutput(JSON.stringify({ result: 'success', row: row, phone: ghiDuoc }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
     return ContentService
