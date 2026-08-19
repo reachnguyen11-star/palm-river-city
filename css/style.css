@@ -246,9 +246,11 @@ p strong{color:var(--ink);}
     linear-gradient(180deg, rgba(11,22,5,.5) 0%, rgba(11,22,5,0) 24%),
     linear-gradient(0deg, rgba(11,22,5,.6) 0%, rgba(11,22,5,0) 40%);
 }
-/* Canh trái, nằm dưới headline "Hiếm hoi... TP.HCM" và trên cụm tháp. */
+/* Dải trống bên phải tag "Ga Bình Trung", dưới dòng "tại trung tâm TP.HCM"
+   và trên cụm tháp — lệch trái so với tâm ảnh nhưng không đứng cô lập ở
+   góc dưới như khi đặt tại top:60%. */
 .hero-cta-wrap{
-  position:absolute;z-index:2;left:6%;top:60%;
+  position:absolute;z-index:2;left:32%;top:38%;
   display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
 }
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:flex-start;}
@@ -597,12 +599,12 @@ p strong{color:var(--ink);}
 
 /* floating actions */
 .floating-actions{
-  position:fixed;bottom:1.6rem;right:1.6rem;z-index:400;display:flex;flex-direction:column;gap:.8rem;
+  position:fixed;bottom:1.6rem;left:1.6rem;z-index:400;display:flex;flex-direction:column;gap:.8rem;
   transition:opacity .3s ease, transform .3s ease;
 }
 /* The Palm City banner has its own headline and figures printed in the
-   bottom-right corner, so the buttons step aside while it is on screen. */
-.floating-actions.is-hidden{opacity:0;transform:translateX(120%);pointer-events:none;}
+   bottom corner, so the buttons step aside (off-screen left) while it is on screen. */
+.floating-actions.is-hidden{opacity:0;transform:translateX(-120%);pointer-events:none;}
 @media (prefers-reduced-motion: reduce){
   .floating-actions{transition:none;}
   .floating-actions.is-hidden{transform:none;}
@@ -618,7 +620,7 @@ p strong{color:var(--ink);}
 /* Nhãn chữ của nút "Nhận tư vấn": icon chat một mình không đủ rõ nghĩa, và
    trên mobile không có hover để hiện tooltip, nên hiển thị luôn thường trực. */
 .fab-label{
-  position:absolute;right:calc(100% + .7rem);top:50%;transform:translateY(-50%);
+  position:absolute;left:calc(100% + .7rem);top:50%;transform:translateY(-50%);
   background:var(--forest);color:var(--gold-light);font-size:.72rem;font-weight:600;
   padding:.4rem .8rem;border-radius:20px;white-space:nowrap;
   box-shadow:0 6px 16px rgba(0,0,0,.22);
