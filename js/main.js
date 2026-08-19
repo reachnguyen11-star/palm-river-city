@@ -100,7 +100,7 @@ const openLightbox = (e) => {
   lightboxImg.alt = img.alt;
   lightbox.classList.add('is-active');
 };
-['galleryGrid', 'awardShowcase', 'locationImageWrap', 'masterplanImageWrap'].forEach((id) => {
+['galleryGrid', 'awardShowcase', 'locationImageWrap', 'masterplanImageWrap', 'amenityPhotoGrid', 'tabRenderGallery3pn'].forEach((id) => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('click', openLightbox);
 });
@@ -179,6 +179,7 @@ contactForm.addEventListener('submit', (e) => {
     source: 'Form liên hệ',
     name: formData.get('name'),
     phone: formData.get('phone'),
+    need: formData.get('need'),
     unit_type: formData.get('unit_type'),
   });
 
@@ -191,7 +192,12 @@ contactForm.addEventListener('submit', (e) => {
 const needSelect = document.getElementById('needSelect');
 document.querySelectorAll('.goal-cta').forEach(btn => {
   btn.addEventListener('click', () => {
-    if (needSelect && btn.dataset.need) needSelect.value = btn.dataset.need;
+    if (!needSelect || !btn.dataset.need) return;
+    needSelect.value = btn.dataset.need;
+    // Nhấp nháy viền vàng một nhịp để khách thấy lựa chọn của mình đã được
+    // điền sẵn, vì thao tác này xảy ra ngay lúc trang đang cuộn xuống form.
+    needSelect.classList.add('is-preset');
+    setTimeout(() => needSelect.classList.remove('is-preset'), 1600);
   });
 });
 

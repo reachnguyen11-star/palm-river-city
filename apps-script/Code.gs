@@ -68,7 +68,10 @@ var COL = {
   // utm_campaign, fbclid trên đường dẫn nên tự nó đã cho biết nguồn quảng cáo.
   LINK_CHUYEN_DOI: 4,
   STATUS: 7,
-  LOAI_CAN: 17   // cột tên sẵn "anh/chị_quan_tâm_loại_căn_nào?", đang trống 100%
+  // Cột tên sẵn "anh/chị_quan_tâm_loại_căn_nào?". Ghi cả "need" (Mua để ở /
+  // Đầu tư / Cho thuê) lẫn "unit_type" (2PN / 3PN) vào đây, nối bằng " · ",
+  // vì sheet không có cột riêng cho "nhu cầu" — xem doPost().
+  LOAI_CAN: 17
 };
 
 /** Mở URL trên trình duyệt để kiểm tra script còn sống. */
@@ -137,7 +140,15 @@ function doPost(e) {
     sheet.getRange(row, COL.SO_DIEN_THOAI).setValue(phone ? "'" + phone : '');
     sheet.getRange(row, COL.LINK_CHUYEN_DOI).setValue(data.page_url || '');
     sheet.getRange(row, COL.STATUS).setValue('Mới');
-    sheet.getRange(row, COL.LOAI_CAN).setValue(data.unit_type || data.need || '');
+    // Cột này chỉ có 1 chỗ để ghi, nhưng form gửi lên 2 thông tin khác nhau:
+    // "need" (Mua để ở / Đầu tư / Cho thuê) và "unit_type" (2PN / 3PN).
+    // Trước đây dùng data.unit_type || data.need nên khi cả hai cùng có giá
+    // trị, "need" bị unit_type đè mất — sale không còn biết khách thuộc
+    // nhóm nào. Nối cả hai lại để không mất thông tin nào.
+    var loaiCan = [data.need, data.unit_type]
+      .filter(function (v) { return v && String(v).trim(); })
+      .join(' · ');
+    sheet.getRange(row, COL.LOAI_CAN).setValue(loaiCan);
 
     SpreadsheetApp.flush();
 
@@ -171,9 +182,11 @@ function testGhiThu() {
     name: 'Nguyễn Văn Test',
     phone: '0912345678',
     email: 'test@example.com',
+    need: 'Đầu tư',
     unit_type: '2 Phòng ngủ',
     utm_source: 'test',
     page_url: 'https://palm-river.aureal.com.vn/'
   }) } });
   Logger.log(res.getContent());
+  // Kỳ vọng: cột LOAI_CAN (17) ghi "Đầu tư · 2 Phòng ngủ".
 }

@@ -11,7 +11,7 @@
 <link rel="icon" href="images/brand/favicon-32.jpg" sizes="32x32">
 <link rel="icon" href="images/brand/favicon-192.webp" sizes="192x192">
 <link rel="apple-touch-icon" href="images/brand/favicon-192.webp">
-<link rel="stylesheet" href="css/style.css?v=20260808-cta">
+<link rel="stylesheet" href="css/style.css?v=20260819-uudai">
 
 <!-- ============================ TRACKING ============================ -->
 
@@ -209,6 +209,14 @@ a.load=function(b,d)
   </div>
 </section>
 
+<!-- ============ HẠ TẦNG GIAO THÔNG ============ -->
+<!-- Ảnh đã có sẵn số liệu và chú thích (20 phút sân bay Long Thành, 25 phút
+     Thủ Thiêm, ga Bình Trung...), nên để nguyên dạng full-bleed như banner
+     Palm City phía trên, không chồng thêm chữ. -->
+<section class="overview-banner">
+  <img src="images/vi-tri-ha-tang.jpg" alt="Hạ tầng giao thông kết nối Palm City: 20 phút đến sân bay Long Thành, 25 phút đến Thủ Thiêm, ga Bình Trung, khu thể thao Rạch Chiếc" loading="lazy">
+</section>
+
 <div class="wave-divider wave-into-white"><svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path d="M0,30 C240,80 480,10 720,45 C960,80 1200,20 1440,55 L1440,90 L0,90 Z"></path></svg></div>
 
 <!-- ============ VẬN HÀNH HẰNG NGÀY ============ -->
@@ -296,7 +304,14 @@ a.load=function(b,d)
       </div>
     </div>
 
-    <div class="amenity-photo-grid reveal-up">
+    <!-- id để dùng chung lightbox với #galleryGrid, xem js/main.js.
+         5 ảnh phối cảnh tiện ích cụ thể đặt trước, sau đó tới ảnh tổng thể/cảnh quan. -->
+    <div class="amenity-photo-grid reveal-up" id="amenityPhotoGrid">
+      <img src="images/amenities/cinema.jpg" alt="Phòng chiếu phim riêng Palm River" loading="lazy">
+      <img src="images/amenities/game-room.jpg" alt="Phòng giải trí, khu vui chơi nội khu Palm River" loading="lazy">
+      <img src="images/amenities/massage.jpg" alt="Phòng massage, thủy trị liệu Palm River" loading="lazy">
+      <img src="images/amenities/private-dining.jpg" alt="Phòng ăn riêng tư (private dining) Palm River" loading="lazy">
+      <img src="images/amenities/sky-bridge.jpg" alt="Cầu xanh trên không kết nối các tòa tháp, hướng ra sông Palm River" loading="lazy">
       <img src="images/amenities/palm-city-30.jpg" alt="Tiện ích cảnh quan Palm City" loading="lazy">
       <img src="images/amenities/palm-city-13.jpg" alt="Không gian tiện ích Palm City" loading="lazy">
       <img src="images/amenities/palm-city-11.jpg" alt="Cảnh quan nội khu Palm City" loading="lazy">
@@ -372,6 +387,17 @@ a.load=function(b,d)
           <h3>3 Phòng ngủ</h3>
           <p class="tab-fit">Phù hợp: gia đình nhiều thế hệ, khách nâng cấp nơi sống</p>
           <p>Không gian sống rộng, tầm nhìn ra sông, có thể bố trí khu vực chức năng riêng cho gia đình.</p>
+        </div>
+        <!-- Phối cảnh nhà mẫu: chỉ 3PN có bộ ảnh này. Dùng chung co-chế lightbox
+             với #galleryGrid, thêm id vào mảng trong js/main.js. -->
+        <div class="tab-render-gallery" id="tabRenderGallery3pn">
+          <p class="tab-render-label">Phối cảnh nhà mẫu thực tế</p>
+          <div class="render-grid">
+            <img src="images/layout/3pn-living.jpg" alt="Phối cảnh phòng khách căn hộ mẫu 3 phòng ngủ Palm River" loading="lazy">
+            <img src="images/layout/3pn-kitchen.jpg" alt="Phối cảnh khu bếp và phòng ăn căn hộ mẫu Palm River" loading="lazy">
+            <img src="images/layout/3pn-masterbed.jpg" alt="Phối cảnh phòng ngủ master căn hộ mẫu 3 phòng ngủ Palm River" loading="lazy">
+            <img src="images/layout/3pn-wardrobe.jpg" alt="Phối cảnh phòng thay đồ căn hộ mẫu 3 phòng ngủ Palm River" loading="lazy">
+          </div>
         </div>
       </div>
     </div>
@@ -485,6 +511,18 @@ a.load=function(b,d)
         <label>Số điện thoại *<input type="tel" name="phone" required placeholder="09xx xxx xxx" pattern="[0-9+ ]{9,13}"></label>
       </div>
       <div class="form-row">
+        <!-- id="needSelect": các CTA ở khối "2 nhóm khách" (.goal-cta) điền sẵn
+             giá trị vào đây khi khách bấm "Mua để ở" hay "Đầu tư", xem js/main.js. -->
+        <label>Nhu cầu
+          <select name="need" id="needSelect">
+            <option value="">Chưa xác định</option>
+            <option>Mua để ở</option>
+            <option>Đầu tư</option>
+            <option>Cho thuê</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
         <label>Loại căn quan tâm
           <select name="unit_type">
             <option>2 Phòng ngủ</option>
@@ -492,6 +530,18 @@ a.load=function(b,d)
             <option>Chưa xác định</option>
           </select>
         </label>
+      </div>
+      <!-- Khối ưu đãi: nội dung và bộ đếm do js/khuyen-mai.js đổ vào.
+           Ẩn sẵn để không chớp khung rỗng khi thiếu JS hoặc đã hết hạn. -->
+      <div class="offer-box offer-box-light" data-offer hidden>
+        <p class="offer-title" data-offer-title></p>
+        <div class="offer-perks" data-offer-perks></div>
+        <div class="offer-cd">
+          <div class="cd-unit"><span class="cd-num" data-cd="d">--</span><span class="cd-lb">Ngày</span></div>
+          <div class="cd-unit"><span class="cd-num" data-cd="h">--</span><span class="cd-lb">Giờ</span></div>
+          <div class="cd-unit"><span class="cd-num" data-cd="m">--</span><span class="cd-lb">Phút</span></div>
+        </div>
+        <p class="offer-note" data-offer-note></p>
       </div>
       <button type="submit" class="btn btn-gold btn-block">Nhận bảng giá &amp; đặt lịch tư vấn</button>
       <p class="form-success" id="formSuccess">Đã ghi nhận thông tin, cảm ơn bạn! Đội ngũ tư vấn sẽ liên hệ trong thời gian sớm nhất.</p>
@@ -541,6 +591,10 @@ a.load=function(b,d)
     <svg viewBox="0 0 24 24" fill="none"><path d="M6.6 10.8c1.5 3 3.6 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.5 2.3.8 3.6.8.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.2c.6 0 1 .4 1 1 0 1.3.3 2.5.8 3.6.2.3.1.7-.2 1L6.6 10.8z" fill="currentColor"/></svg>
   </a>
   <a href="#lien-he" class="fab fab-msg" aria-label="Nhận tư vấn">
+    <!-- Chỉ có icon thì không rõ nút này để làm gì (khác nút gọi), nên thêm
+         nhãn chữ luôn hiển thị thay vì chỉ hiện khi hover — trên mobile
+         không có hover. -->
+    <span class="fab-label" aria-hidden="true">Nhận tư vấn</span>
     <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v12H8l-4 4V4z" stroke="currentColor" stroke-width="1.7" fill="none"/></svg>
   </a>
 </div>
@@ -561,6 +615,16 @@ a.load=function(b,d)
         <li>Chính sách bán hàng &amp; hỗ trợ lãi suất</li>
         <li>Hồ sơ pháp lý theo công bố của chủ đầu tư</li>
       </ul>
+      <div class="offer-box" data-offer hidden>
+        <p class="offer-title" data-offer-title></p>
+        <div class="offer-perks" data-offer-perks></div>
+        <div class="offer-cd">
+          <div class="cd-unit"><span class="cd-num" data-cd="d">--</span><span class="cd-lb">Ngày</span></div>
+          <div class="cd-unit"><span class="cd-num" data-cd="h">--</span><span class="cd-lb">Giờ</span></div>
+          <div class="cd-unit"><span class="cd-num" data-cd="m">--</span><span class="cd-lb">Phút</span></div>
+        </div>
+        <p class="offer-note" data-offer-note></p>
+      </div>
       <form class="doc-form" id="docForm">
         <input type="text" name="name" required placeholder="Họ và tên *">
         <input type="tel" name="phone" required placeholder="Số điện thoại *" pattern="[0-9+ ]{9,13}">
@@ -585,6 +649,7 @@ a.load=function(b,d)
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/main.js"></script>
+<script src="js/khuyen-mai.js"></script>
 
 <!-- ============ LEADHUB CRM ============ -->
 <!-- Bắt cả submit của <form> lẫn click vào button, gom field có name + value,
@@ -619,12 +684,16 @@ a.load=function(b,d)
   }
   // Bắt form submit (capture phase)
   document.addEventListener('submit', function(e){ send(e.target); }, true);
-  // Bắt button click (Ladipage hay submit qua button, không qua <form>)
+  // Bắt button click (Ladipage hay submit qua button, không qua <form>).
+  // Trước đây còn dò chữ trong innerText của tối đa 5 cấp cha, nên bất kỳ
+  // click nào lọt vào bên trong <form> (một ô nhập liệu trống, một nhãn,
+  // khối ưu đãi...) cũng khớp chữ "Nhận" của nút submit và bắn lead sớm,
+  // trước khi khách kịp điền xong hay bấm gửi. Chỉ còn bắt đúng phần tử
+  // BUTTON hoặc input[type=submit] thật sự.
   document.addEventListener('click', function(e){
     var el=e.target;
     for(var n=0;n<5 && el;n++){
-      var t=(el.innerText||el.value||'').toLowerCase();
-      if(el.tagName==='BUTTON'||el.type==='submit'||/đăng ký|gửi|nhận|tư vấn|submit/.test(t)){
+      if(el.tagName==='BUTTON'||el.type==='submit'){
         setTimeout(function(){send(el.closest('form'));},300); break;
       }
       el=el.parentElement;
