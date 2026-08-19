@@ -272,25 +272,42 @@ docForm.addEventListener('submit', (e) => {
 });
 
 // Auto-trigger once per session: after a delay, or at ~45% scroll depth, whichever comes first.
+// autoPopupTimer/autoPopupScrollTrigger khai báo ở scope ngoài (thay vì bên
+// trong khối if) để nút CTA hero bên dưới cũng huỷ được lịch tự động này,
+// tránh popup bật lần hai ngay sau khi khách vừa tự đóng.
 const POPUP_FLAG = 'palmriver_doc_popup_shown';
+let autoPopupTimer = null;
+let autoPopupScrollTrigger = null;
 if (!sessionStorage.getItem(POPUP_FLAG)) {
   const markShown = () => sessionStorage.setItem(POPUP_FLAG, '1');
-  let scrollTrigger = null;
 
-  const delayTimer = setTimeout(() => {
-    if (scrollTrigger) scrollTrigger.kill();
+  autoPopupTimer = setTimeout(() => {
+    if (autoPopupScrollTrigger) autoPopupScrollTrigger.kill();
     openDocPopup();
     markShown();
   }, 20000);
 
-  scrollTrigger = ScrollTrigger.create({
+  autoPopupScrollTrigger = ScrollTrigger.create({
     trigger: document.body,
     start: '45% top',
     once: true,
     onEnter: () => {
-      clearTimeout(delayTimer);
+      clearTimeout(autoPopupTimer);
       openDocPopup();
       markShown();
     },
+  });
+}
+
+// CTA chính ở hero mở thẳng popup nhận tài liệu thay vì cuộn xuống form
+// cuối trang. Đánh dấu đã hiện + huỷ lịch tự động, tránh popup tự bật lại
+// ngay sau khi khách vừa chủ động đóng.
+const heroOpenPopup = document.getElementById('heroOpenPopup');
+if (heroOpenPopup) {
+  heroOpenPopup.addEventListener('click', () => {
+    sessionStorage.setItem(POPUP_FLAG, '1');
+    clearTimeout(autoPopupTimer);
+    if (autoPopupScrollTrigger) autoPopupScrollTrigger.kill();
+    openDocPopup();
   });
 }
