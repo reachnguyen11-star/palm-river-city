@@ -81,22 +81,26 @@
       return;
     }
 
-    var tongPhut = Math.floor(conLai / 60000);
-    var ngay = Math.floor(tongPhut / 1440);
-    var gio = Math.floor((tongPhut % 1440) / 60);
-    var phut = tongPhut % 60;
+    var tongGiay = Math.floor(conLai / 1000);
+    var ngay = Math.floor(tongGiay / 86400);
+    var gio = Math.floor((tongGiay % 86400) / 3600);
+    var phut = Math.floor((tongGiay % 3600) / 60);
+    var giay = tongGiay % 60;
 
     khoi.forEach(function (box) {
       var d = box.querySelector('[data-cd="d"]');
       var h = box.querySelector('[data-cd="h"]');
       var m = box.querySelector('[data-cd="m"]');
+      var s = box.querySelector('[data-cd="s"]');
       if (d) d.textContent = dem2(ngay);
       if (h) h.textContent = dem2(gio);
       if (m) m.textContent = dem2(phut);
+      if (s) s.textContent = dem2(giay);
       box.hidden = false;
     });
   }
 
   nhip();
-  boDem = setInterval(nhip, 15000);
+  // Cần chạy mỗi giây để ô "Giây" chạy mượt, không nhảy cụm như nhịp 15s cũ.
+  boDem = setInterval(nhip, 1000);
 })();
