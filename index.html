@@ -365,17 +365,35 @@ a.load=function(b,d)
 <!-- ============ LAYOUTS ============ -->
 <section class="section section-forest" id="mat-bang">
   <div class="container">
-    <h2 class="light center reveal-up">Từ căn hộ 2 phòng ngủ đến không gian sống <span class="accent-script">đa thế hệ</span></h2>
-    <p class="lead light center reveal-up">Hai dòng căn hộ chủ lực phù hợp nhu cầu gia đình: lập gia đình, nâng cấp nơi sống hoặc tích sản dài hạn.</p>
+    <h2 class="light center reveal-up">Từ Studio linh hoạt đến căn hộ <span class="accent-script">đa thế hệ</span></h2>
+    <p class="lead light center reveal-up">Dải sản phẩm được tổ chức để phù hợp nhiều nhịp sống: người trẻ cần một không gian tinh gọn, gia đình nhỏ muốn ổn định lâu dài và gia đình nhiều thế hệ cần sự riêng tư trong cùng một mái nhà.</p>
 
     <div class="tabs" id="layoutTabs">
-      <button class="tab-btn is-active" data-target="2pn">2 Phòng ngủ</button>
+      <button class="tab-btn is-active" data-target="studio">Studio</button>
+      <button class="tab-btn" data-target="1pn">1 Phòng ngủ</button>
+      <button class="tab-btn" data-target="2pn">2 Phòng ngủ</button>
       <button class="tab-btn" data-target="3pn">3 Phòng ngủ</button>
     </div>
 
     <div class="tab-panels">
-      <div class="tab-panel is-active" data-panel="2pn">
-        <img src="images/layout/2pn.png" alt="Mặt bằng 2 phòng ngủ Palm River">
+      <div class="tab-panel is-active" data-panel="studio">
+        <img src="images/layout/studio.png" alt="Mặt bằng căn hộ Studio Palm River" loading="lazy">
+        <div class="tab-panel-info">
+          <h3>Studio</h3>
+          <p class="tab-fit">Phù hợp: người trẻ, chuyên gia làm việc tại khu Đông, nhà đầu tư khai thác cho thuê</p>
+          <p>Không gian tinh gọn, dễ vận hành và tối ưu công năng cho nhịp sống năng động trong tổng thể Palm City đã hình thành cộng đồng cư dân.</p>
+        </div>
+      </div>
+      <div class="tab-panel" data-panel="1pn">
+        <img src="images/layout/1pn.jpg" alt="Mặt bằng 1 phòng ngủ Palm River" loading="lazy">
+        <div class="tab-panel-info">
+          <h3>1 Phòng ngủ</h3>
+          <p class="tab-fit">Phù hợp: khách mua ở một mình, cặp đôi trẻ, nhu cầu tích sản trung hạn</p>
+          <p>Bố cục riêng tư hơn Studio, giữ được sự thoáng mở của khu sinh hoạt chung và phù hợp với lối sống tối giản nhưng chỉn chu.</p>
+        </div>
+      </div>
+      <div class="tab-panel" data-panel="2pn">
+        <img src="images/layout/2pn.png" alt="Mặt bằng 2 phòng ngủ Palm River" loading="lazy">
         <div class="tab-panel-info">
           <h3>2 Phòng ngủ</h3>
           <p class="tab-fit">Phù hợp: gia đình trẻ, gia đình có con nhỏ, khách mua để ở</p>
@@ -383,30 +401,44 @@ a.load=function(b,d)
         </div>
       </div>
       <div class="tab-panel" data-panel="3pn">
-        <img src="images/layout/3pn.png" alt="Mặt bằng 3 phòng ngủ Palm River">
+        <img src="images/layout/3pn.png" alt="Mặt bằng 3 phòng ngủ Palm River" loading="lazy">
         <div class="tab-panel-info">
           <h3>3 Phòng ngủ</h3>
           <p class="tab-fit">Phù hợp: gia đình nhiều thế hệ, khách nâng cấp nơi sống</p>
           <p>Không gian sống rộng, tầm nhìn ra sông, có thể bố trí khu vực chức năng riêng cho gia đình.</p>
-        </div>
-        <!-- Phối cảnh nhà mẫu: chỉ 3PN có bộ ảnh này. Dùng chung co-chế lightbox
-             với #galleryGrid, thêm id vào mảng trong js/main.js. -->
-        <div class="tab-render-gallery" id="tabRenderGallery3pn">
-          <p class="tab-render-label">Phối cảnh nhà mẫu thực tế</p>
-          <div class="render-grid">
-            <img src="images/layout/3pn-living.jpg" alt="Phối cảnh phòng khách căn hộ mẫu 3 phòng ngủ Palm River" loading="lazy">
-            <img src="images/layout/3pn-kitchen.jpg" alt="Phối cảnh khu bếp và phòng ăn căn hộ mẫu Palm River" loading="lazy">
-            <img src="images/layout/3pn-masterbed.jpg" alt="Phối cảnh phòng ngủ master căn hộ mẫu 3 phòng ngủ Palm River" loading="lazy">
-            <img src="images/layout/3pn-wardrobe.jpg" alt="Phối cảnh phòng thay đồ căn hộ mẫu 3 phòng ngủ Palm River" loading="lazy">
-          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Mặt bằng và phần tiếp theo đều là section tối nên đọc liền mạch, không cần divider. -->
+<!-- ============ APARTMENT INTERIORS ============ -->
+<section class="section section-cream" id="noi-that-can-ho">
+  <div class="container">
+    <p class="kicker center reveal-up">Nội thất căn hộ</p>
+    <h2 class="center reveal-up">Không gian sống chỉn chu từ phòng khách đến phòng ngủ</h2>
+    <p class="lead center reveal-up">Bộ phối cảnh nội thất gợi mở cách Palm River tổ chức nhịp sống hằng ngày: khu tiếp khách rộng thoáng, bếp và bàn ăn liền mạch, phòng ngủ master riêng tư và hệ tủ áo được xử lý gọn gàng.</p>
 
+    <div class="interior-grid reveal-up" id="interiorGallery">
+      <figure class="interior-card interior-card-large">
+        <img src="images/layout/3pn-living.jpg" alt="Phối cảnh phòng khách căn hộ Palm River" loading="lazy">
+        <figcaption>Phòng khách mở rộng tầm nhìn, ưu tiên ánh sáng tự nhiên và cảm giác kết nối với cảnh quan.</figcaption>
+      </figure>
+      <figure class="interior-card">
+        <img src="images/layout/3pn-kitchen.jpg" alt="Phối cảnh khu bếp và bàn ăn căn hộ Palm River" loading="lazy">
+        <figcaption>Bếp và bàn ăn bố trí liền mạch cho sinh hoạt gia đình mỗi ngày.</figcaption>
+      </figure>
+      <figure class="interior-card">
+        <img src="images/layout/3pn-masterbed.jpg" alt="Phối cảnh phòng ngủ master căn hộ Palm River" loading="lazy">
+        <figcaption>Phòng ngủ master giữ sự yên tĩnh, ấm áp và riêng tư sau một ngày dài.</figcaption>
+      </figure>
+      <figure class="interior-card">
+        <img src="images/layout/3pn-wardrobe.jpg" alt="Phối cảnh phòng thay đồ căn hộ Palm River" loading="lazy">
+        <figcaption>Không gian lưu trữ được thiết kế gọn, tạo cảm giác ngăn nắp cho căn hộ lớn.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 <!-- ============ DEVELOPER ============ -->
 <section class="section section-cream" id="chu-dau-tu">
   <div class="container split">
@@ -629,7 +661,6 @@ a.load=function(b,d)
       <form class="doc-form" id="docForm">
         <input type="text" name="name" required placeholder="Họ và tên *">
         <input type="tel" name="phone" required placeholder="Số điện thoại *" pattern="[0-9+ ]{9,13}">
-        <input type="email" name="email" required placeholder="Email *">
         <button type="submit" class="btn btn-gold btn-block">Nhận tài liệu tư vấn</button>
         <p class="doc-success" id="docSuccess">Đã ghi nhận thông tin, cảm ơn bạn. Tài liệu sẽ được gửi trong thời gian sớm nhất.</p>
       </form>

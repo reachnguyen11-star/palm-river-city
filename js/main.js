@@ -100,7 +100,7 @@ const openLightbox = (e) => {
   lightboxImg.alt = img.alt;
   lightbox.classList.add('is-active');
 };
-['galleryGrid', 'awardShowcase', 'locationImageWrap', 'masterplanImageWrap', 'amenityPhotoGrid', 'tabRenderGallery3pn'].forEach((id) => {
+['galleryGrid', 'awardShowcase', 'locationImageWrap', 'masterplanImageWrap', 'amenityPhotoGrid', 'interiorGallery'].forEach((id) => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('click', openLightbox);
 });
@@ -262,7 +262,6 @@ docForm.addEventListener('submit', (e) => {
     source: 'Popup nhận tài liệu',
     name: formData.get('name'),
     phone: formData.get('phone'),
-    email: formData.get('email'),
     need: 'Nhận trọn bộ tài liệu dự án',
   });
 
@@ -285,7 +284,7 @@ if (!sessionStorage.getItem(POPUP_FLAG)) {
     if (autoPopupScrollTrigger) autoPopupScrollTrigger.kill();
     openDocPopup();
     markShown();
-  }, 20000);
+  }, 15000);
 
   autoPopupScrollTrigger = ScrollTrigger.create({
     trigger: document.body,
