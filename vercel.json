@@ -3,5 +3,13 @@
   "rewrites": [
     { "source": "/chinh-sach-bao-mat", "destination": "/chinh-sach-bao-mat.html" },
     { "source": "/dieu-khoan-su-dung", "destination": "/dieu-khoan-su-dung.html" }
+  ],
+  "headers": [
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, must-revalidate" }
+      ]
+    }
   ]
 }
