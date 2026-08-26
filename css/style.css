@@ -254,13 +254,6 @@ p strong{color:var(--ink);}
   display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
 }
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:flex-start;}
-.hero-price-badge{
-  display:inline-flex;align-items:baseline;gap:.4rem;align-self:flex-start;
-  background:rgba(11,22,5,.4);border:1px solid rgba(243,223,170,.4);
-  padding:.55rem 1.1rem;border-radius:2px;
-  font-family:var(--font-body);font-size:.92rem;color:#fff;
-}
-.hero-price-badge strong{color:var(--gold-light);font-size:1.2rem;font-weight:700;}
 
 .scroll-cue{
   position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);z-index:2;
@@ -569,6 +562,10 @@ p strong{color:var(--ink);}
 .contact-info{margin:1.6rem 0;display:flex;flex-direction:column;gap:.6rem;}
 .contact-info li{color:#cdd8cf;font-size:.95rem;}
 .contact-info a{color:var(--gold-light);font-weight:600;}
+.contact-portrait{
+  width:100%;max-width:420px;height:auto;aspect-ratio:900/1104;object-fit:cover;display:block;
+  margin:1.6rem 0;border-radius:var(--radius);box-shadow:0 18px 40px rgba(11,22,5,.12);
+}
 .contact-info a:hover{text-decoration:underline;}
 .contact-info em{color:#93a08d;font-style:normal;font-size:.8rem;}
 .disclaimer{font-size:.8rem;color:#93a08d;margin-top:1rem;}
@@ -688,8 +685,12 @@ p strong{color:var(--ink);}
   width:100%;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.16);border-radius:2px;
   background:rgba(255,255,255,.06);color:#fff;font-family:var(--font-body);font-size:.92rem;
 }
-.doc-form select{color:#9aa89a;}
-.doc-form select:valid{color:#fff;}
+.doc-form select{color:#fff;}
+.doc-form select:required:invalid{color:#9aa89a;}
+/* Danh sách option khi mở ra dùng nền trắng do trình duyệt vẽ (không theo
+   được nền trong suốt của ô select), nên phải ghi màu chữ tối riêng cho
+   option - nếu không sẽ bị chữ trắng trên nền trắng, không đọc được. */
+.doc-form select option{color:#1a2416;background:#fff;}
 .doc-form input::placeholder{color:#9aa89a;}
 .doc-form input:focus,.doc-form select:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.1);}
 .doc-form .btn{margin-top:.3rem;}

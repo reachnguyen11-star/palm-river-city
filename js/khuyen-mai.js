@@ -16,7 +16,7 @@
     // Các điểm nhấn ưu đãi. Thêm, bớt hoặc sửa tự do.
     // Để mảng rỗng [] nếu chưa chốt số — khi đó chỉ còn tiêu đề và bộ đếm.
     uuDai: [
-      { nhan: 'Chiết khấu đến', so: '12%' },
+      { nhan: 'Chiết khấu đến', so: '16.5%' },
       { nhan: 'Vốn ban đầu chỉ', so: '10%' },
     ],
 

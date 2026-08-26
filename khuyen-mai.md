@@ -11,7 +11,7 @@
 | Thông số | Giá trị hiện tại | Ghi chú |
 |---|---|---|
 | **Hạn chót ưu đãi** | `30/08/2026` (hết ngày, 23:59) | Đã chốt. Countdown đang đếm về mốc này |
-| **Chiết khấu** | `đến 12%` | Đã chốt |
+| **Chiết khấu** | `đến 16.5%` | Đã chốt |
 | **Vốn ban đầu** | `chỉ 10%` | Đã chốt |
 | **Tên gọi đợt** | `đợt đầu` | Hoặc: "đợt mở bán đầu tiên", "giai đoạn 1" |
 | **Điều kiện áp dụng** | *(chưa có)* | VD: áp dụng cho khách ký HĐĐC trước hạn |
@@ -25,7 +25,7 @@ var CAU_HINH = {
   hanChot: '2026-08-30T23:59:59+07:00',   // ← đổi hạn chót ở đây
   tieuDe:  'Chính sách ưu đãi đợt đầu',
   uuDai: [                                 // ← thêm/bớt/sửa điểm nhấn ở đây
-    { nhan: 'Chiết khấu đến',   so: '12%' },
+    { nhan: 'Chiết khấu đến',   so: '16.5%' },
     { nhan: 'Vốn ban đầu chỉ',  so: '10%' },
   ],
   ...
@@ -45,7 +45,7 @@ Vị trí: ngay trên form điền thông tin trong popup.
 
 ```
         CHÍNH SÁCH ƯU ĐÃI ĐỢT ĐẦU
-   ( Chiết khấu đến 12% ) ( Vốn ban đầu chỉ 10% )
+   ( Chiết khấu đến 16.5% ) ( Vốn ban đầu chỉ 10% )
       ┌────┐   ┌────┐   ┌────┐
       │ 11 │   │ 14 │   │ 14 │
       │NGÀY│   │ GIỜ│   │PHÚT│
@@ -53,7 +53,7 @@ Vị trí: ngay trên form điền thông tin trong popup.
        Áp dụng đến hết ngày 30.08.2026
 ```
 
-Thứ tự đọc có chủ đích: **ưu đãi trước, hạn chót sau**. Con số 12% và 10% là
+Thứ tự đọc có chủ đích: **ưu đãi trước, hạn chót sau**. Con số 16.5% và 10% là
 thứ khách quan tâm; countdown chỉ là lý do để hành động ngay, không phải thông
 điệp chính. Vì vậy 2 điểm nhấn dùng dạng viên thuốc chứ không dùng khối số
 giống bộ đếm — tránh 2 hàng số trông lặp và loãng.
@@ -92,10 +92,10 @@ có ý thức giữa CVR ngắn hạn và định vị thương hiệu — cần
 Cả hai con số phải khớp **văn bản chính sách bán hàng chính thức từ chủ đầu tư**.
 Theo `content.md` mục 15, không dùng "cam kết sinh lời", "chắc chắn tăng giá".
 
-**Về "Chiết khấu đến 12%":** chữ "đến" là cách viết an toàn — hàm ý 12% là mức
-trần, không phải mức ai cũng được. Nếu văn bản CĐT ghi 12% là mức cố định thì
-bỏ chữ "đến". Nếu 12% là tổng của nhiều khoản cộng lại (thanh toán nhanh + đợt
-đầu + khách hàng thân thiết...) thì nên ghi rõ **"tổng chiết khấu đến 12%"** để
+**Về "Chiết khấu đến 16.5%":** chữ "đến" là cách viết an toàn — hàm ý 16.5% là mức
+trần, không phải mức ai cũng được. Nếu văn bản CĐT ghi 16.5% là mức cố định thì
+bỏ chữ "đến". Nếu 16.5% là tổng của nhiều khoản cộng lại (thanh toán nhanh + đợt
+đầu + khách hàng thân thiết...) thì nên ghi rõ **"tổng chiết khấu đến 16.5%"** để
 không bị hiểu là chiết khấu trực tiếp trên giá.
 
 **Về "Vốn ban đầu chỉ 10%":** đây là câu dễ gây hiểu nhầm nhất trong bộ ưu đãi.
@@ -176,7 +176,7 @@ trên mobile không có hover để hiện tooltip. Nhãn tự ẩn ở màn hì
 □ Mở trang, kiểm tra countdown hiện đúng số ngày còn lại ở cả popup và form
 □ Kiểm tra trên mobile: khối ưu đãi không vỡ layout trong popup
 □ Sau 30/08/2026: xác nhận khối ưu đãi tự ẩn, không hiện số âm
-□ Đối chiếu số 12% và 10% với văn bản chính sách của chủ đầu tư
+□ Đối chiếu số 16.5% và 10% với văn bản chính sách của chủ đầu tư
 □ Bấm CTA "Tư vấn căn phù hợp cho gia đình" / "Nhận phân tích giỏ hàng" ở khối
   2 nhóm khách — kiểm tra field "Nhu cầu" trong form cuối trang tự điền đúng
   và viền vàng nhấp nháy xác nhận
