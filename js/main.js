@@ -167,12 +167,40 @@ function goToThankYou() {
   setTimeout(() => { window.location.href = THANK_YOU_URL; }, 600);
 }
 
+// ===== Chống bot khi gửi form =====
+// Hai lớp kiểm tra rẻ tiền nhưng chặn được phần lớn bot điền form tự động:
+// (1) honeypot "company" phải luôn trống với người thật; (2) không ai điền
+// xong form nhanh hơn ~1.5s kể từ lúc trang/popup sẵn sàng, bot script thì có.
+// Bị nghi là bot -> âm thầm bỏ qua (không gửi CRM, không bắn conversion,
+// không báo lỗi) để không lộ cơ chế lọc cho bot biết.
+const PAGE_LOAD_TIME = Date.now();
+const MIN_FILL_TIME_MS = 1500;
+
+function isSuspectedBot_(form, readySince) {
+  const honeypot = form.querySelector('input[name="company"]');
+  if (honeypot && honeypot.value.trim() !== '') return true;
+  if (Date.now() - readySince < MIN_FILL_TIME_MS) return true;
+  return false;
+}
+
+// ===== Nhận diện traffic MGID để xử lý "hâm nóng" riêng =====
+// Khách từ MGID là traffic tò mò từ native ads/content-discovery, chưa có
+// intent tìm mua như khách từ Google/Meta. Đưa thẳng vào popup xin SĐT
+// (friction thấp) ngay khi vừa vào trang dễ tạo lead rác. Dò qua utm_source/
+// utm_medium vì URL quảng cáo MGID luôn gắn 1 trong 2 giá trị này.
+const IS_MGID_TRAFFIC = (() => {
+  const p = new URLSearchParams(location.search);
+  const src = `${p.get('utm_source') || ''} ${p.get('utm_medium') || ''}`.toLowerCase();
+  return src.includes('mgid');
+})();
+
 // ===== Contact form =====
 const contactForm = document.getElementById('contactForm');
 const formSuccess = document.getElementById('formSuccess');
 contactForm.addEventListener('submit', (e) => {
   e.preventDefault();
   if (!contactForm.checkValidity()) return;
+  if (isSuspectedBot_(contactForm, PAGE_LOAD_TIME)) return;
 
   const formData = new FormData(contactForm);
   sendLeadToCRM({
@@ -181,6 +209,7 @@ contactForm.addEventListener('submit', (e) => {
     phone: formData.get('phone'),
     need: formData.get('need'),
     unit_type: formData.get('unit_type'),
+    budget: formData.get('budget'),
   });
 
   formSuccess.classList.add('is-active');
@@ -209,6 +238,7 @@ const docForm = document.getElementById('docForm');
 const docSuccess = document.getElementById('docSuccess');
 
 let docTl = null;
+let docPopupOpenedAt = 0; // reset mỗi lần popup mở, dùng cho check chống bot
 
 function buildDocTimeline() {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -229,6 +259,7 @@ function openDocPopup() {
   if (docOverlay.classList.contains('is-active')) return;
   docOverlay.classList.add('is-active');
   document.body.style.overflow = 'hidden';
+  docPopupOpenedAt = Date.now();
   docTl = buildDocTimeline();
   docTl.play();
 }
@@ -256,13 +287,15 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDocPo
 docForm.addEventListener('submit', (e) => {
   e.preventDefault();
   if (!docForm.checkValidity()) return;
+  if (isSuspectedBot_(docForm, docPopupOpenedAt)) return;
 
   const formData = new FormData(docForm);
   sendLeadToCRM({
     source: 'Popup nhận tài liệu',
     name: formData.get('name'),
     phone: formData.get('phone'),
-    need: 'Nhận trọn bộ tài liệu dự án',
+    need: formData.get('need'),
+    budget: formData.get('budget'),
   });
 
   docSuccess.classList.add('is-active');
@@ -274,7 +307,14 @@ docForm.addEventListener('submit', (e) => {
 // autoPopupTimer/autoPopupScrollTrigger khai báo ở scope ngoài (thay vì bên
 // trong khối if) để nút CTA hero bên dưới cũng huỷ được lịch tự động này,
 // tránh popup bật lần hai ngay sau khi khách vừa tự đóng.
+//
+// Traffic MGID chưa có context/intent như khách từ Google/Meta, xin SĐT quá
+// sớm (15s, chỉ vừa đọc hero) dễ ra lead rác/bấm nhầm. Traffic này được cho
+// thêm thời gian đọc nội dung + phải cuộn sâu hơn hẳn (qua khỏi khối "mục
+// tiêu của bạn") trước khi popup mới tự bật.
 const POPUP_FLAG = 'palmriver_doc_popup_shown';
+const POPUP_AUTO_DELAY_MS = IS_MGID_TRAFFIC ? 45000 : 15000;
+const POPUP_SCROLL_START = IS_MGID_TRAFFIC ? '75% top' : '45% top';
 let autoPopupTimer = null;
 let autoPopupScrollTrigger = null;
 if (!sessionStorage.getItem(POPUP_FLAG)) {
@@ -284,11 +324,11 @@ if (!sessionStorage.getItem(POPUP_FLAG)) {
     if (autoPopupScrollTrigger) autoPopupScrollTrigger.kill();
     openDocPopup();
     markShown();
-  }, 15000);
+  }, POPUP_AUTO_DELAY_MS);
 
   autoPopupScrollTrigger = ScrollTrigger.create({
     trigger: document.body,
-    start: '45% top',
+    start: POPUP_SCROLL_START,
     once: true,
     onEnter: () => {
       clearTimeout(autoPopupTimer);
@@ -301,9 +341,18 @@ if (!sessionStorage.getItem(POPUP_FLAG)) {
 // CTA chính ở hero mở thẳng popup nhận tài liệu thay vì cuộn xuống form
 // cuối trang. Đánh dấu đã hiện + huỷ lịch tự động, tránh popup tự bật lại
 // ngay sau khi khách vừa chủ động đóng.
+//
+// Riêng traffic MGID: chưa từng thấy tên dự án trước khi bấm (click từ tiêu
+// đề gợi tò mò trên native ads), mở thẳng popup xin SĐT lúc này là xin quá
+// sớm. Đưa họ tới khối "mục tiêu của bạn" (#muc-tieu) để tự chọn "Mua để ở"
+// hay "Đầu tư" trước — vừa cho thêm ngữ cảnh, vừa tự lọc bớt người chỉ tò mò.
 const heroOpenPopup = document.getElementById('heroOpenPopup');
 if (heroOpenPopup) {
   heroOpenPopup.addEventListener('click', () => {
+    if (IS_MGID_TRAFFIC) {
+      document.getElementById('muc-tieu').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
     sessionStorage.setItem(POPUP_FLAG, '1');
     clearTimeout(autoPopupTimer);
     if (autoPopupScrollTrigger) autoPopupScrollTrigger.kill();

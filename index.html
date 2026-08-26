@@ -105,6 +105,10 @@ a.load=function(b,d)
   <div class="hero-bg"></div>
   <div class="hero-scrim"></div>
   <div class="hero-cta-wrap reveal">
+    <!-- Lộ giá khởi điểm sớm ngay từ hero để khách tự lọc theo ngân sách
+         trước khi điền form, thay vì tốn 1 cuộc gọi sale mới biết "Vượt tài
+         chính". Đổi số này khi CĐT công bố giá chính thức mới. -->
+    <p class="hero-price-badge">Chỉ từ <strong>16.x triệu/m²</strong> — Full nội thất</p>
     <div class="hero-actions">
       <!-- Mo thang popup nhan tai lieu thay vi cuon xuong form, xem js/main.js -->
       <button type="button" class="btn btn-gold" id="heroOpenPopup">Nhận bảng giá gốc đợt 1 - Ưu đãi đợt 1</button>
@@ -578,7 +582,13 @@ a.load=function(b,d)
         <label>Họ và tên *<input type="text" name="name" required placeholder="Nguyễn Văn A"></label>
       </div>
       <div class="form-row">
-        <label>Số điện thoại *<input type="tel" name="phone" required placeholder="09xx xxx xxx" pattern="[0-9+ ]{9,13}"></label>
+        <label>Số điện thoại *<input type="tel" name="phone" required placeholder="09xx xxx xxx" pattern="0(3[2-9]|5[25689]|7[06-9]|8[1-9]|9[0-9])[0-9]{7}" title="Số di động Việt Nam, 10 số, bắt đầu bằng 0"></label>
+      </div>
+      <!-- Honeypot chống bot: người thật không thấy field này nên luôn để trống,
+           bot điền form tự động thường điền mọi input nó thấy -> có giá trị là lộ.
+           Xem kiểm tra ở js/main.js (isSuspectedBot_). -->
+      <div class="form-row hp-field" aria-hidden="true">
+        <label>Công ty<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
       </div>
       <div class="form-row">
         <!-- id="needSelect": các CTA ở khối "2 nhóm khách" (.goal-cta) điền sẵn
@@ -598,6 +608,19 @@ a.load=function(b,d)
             <option>2 Phòng ngủ</option>
             <option>3 Phòng ngủ</option>
             <option>Chưa xác định</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-row">
+        <!-- Mốc tính từ giá căn nhỏ nhất 5.5 tỷ. Cho khách tự khai ngân sách
+             trước khi sale gọi, đỡ tốn cuộc gọi với khách "Vượt tài chính". -->
+        <label>Ngân sách dự kiến
+          <select name="budget">
+            <option value="">Chưa xác định</option>
+            <option>Từ 5.5 tỷ</option>
+            <option>Từ 5.5 - 8 tỷ</option>
+            <option>Từ 8 - 13 tỷ</option>
+            <option>Trên 13 tỷ</option>
           </select>
         </label>
       </div>
@@ -699,7 +722,26 @@ a.load=function(b,d)
       </div>
       <form class="doc-form" id="docForm">
         <input type="text" name="name" required placeholder="Họ và tên *">
-        <input type="tel" name="phone" required placeholder="Số điện thoại *" pattern="[0-9+ ]{9,13}">
+        <input type="tel" name="phone" required placeholder="Số điện thoại *" pattern="0(3[2-9]|5[25689]|7[06-9]|8[1-9]|9[0-9])[0-9]{7}" title="Số di động Việt Nam, 10 số, bắt đầu bằng 0">
+        <select name="need" required>
+          <option value="" disabled selected>Anh/chị quan tâm để... *</option>
+          <option>Mua để ở</option>
+          <option>Đầu tư</option>
+          <option>Cho thuê</option>
+        </select>
+        <!-- Để optional (không required) để không tăng thêm friction cho
+             popup vốn cần nhẹ, nhanh — khác với #contactForm là form chính. -->
+        <select name="budget">
+          <option value="">Ngân sách dự kiến (không bắt buộc)</option>
+          <option>Từ 5.5 tỷ</option>
+          <option>Từ 5.5 - 8 tỷ</option>
+          <option>Từ 8 - 13 tỷ</option>
+          <option>Trên 13 tỷ</option>
+        </select>
+        <!-- Honeypot chống bot, xem chú thích tương tự ở #contactForm. -->
+        <div class="hp-field" aria-hidden="true">
+          <label>Công ty<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+        </div>
         <button type="submit" class="btn btn-gold btn-block">Nhận tài liệu tư vấn</button>
         <p class="doc-success" id="docSuccess">Đã ghi nhận thông tin, cảm ơn bạn. Tài liệu sẽ được gửi trong thời gian sớm nhất.</p>
       </form>

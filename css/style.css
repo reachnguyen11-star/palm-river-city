@@ -254,6 +254,13 @@ p strong{color:var(--ink);}
   display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
 }
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:flex-start;}
+.hero-price-badge{
+  display:inline-flex;align-items:baseline;gap:.4rem;align-self:flex-start;
+  background:rgba(11,22,5,.4);border:1px solid rgba(243,223,170,.4);
+  padding:.55rem 1.1rem;border-radius:2px;
+  font-family:var(--font-body);font-size:.92rem;color:#fff;
+}
+.hero-price-badge strong{color:var(--gold-light);font-size:1.2rem;font-weight:700;}
 
 .scroll-cue{
   position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);z-index:2;
@@ -566,6 +573,12 @@ p strong{color:var(--ink);}
 .contact-info em{color:#93a08d;font-style:normal;font-size:.8rem;}
 .disclaimer{font-size:.8rem;color:#93a08d;margin-top:1rem;}
 
+/* Bẫy bot: field thật với người dùng nhưng ẩn khỏi mắt thường + trình đọc
+   màn hình. Bot điền form tự động (thường điền mọi input nó thấy trong DOM)
+   sẽ dính bẫy này; display:none/visibility:hidden dễ bị bot né ra nên dùng
+   cách đưa ra ngoài khung nhìn thay vì ẩn hẳn. */
+.hp-field{position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;}
+
 .contact-form{background:var(--cream);padding:2.4rem;border-radius:var(--radius);}
 .form-row{margin-bottom:1.1rem;}
 .form-row label{display:block;font-size:.85rem;font-weight:600;color:var(--forest);margin-bottom:.4rem;}
@@ -671,12 +684,14 @@ p strong{color:var(--ink);}
   transform:rotate(-45deg);
 }
 .doc-form{display:flex;flex-direction:column;gap:.8rem;}
-.doc-form input{
+.doc-form input,.doc-form select{
   width:100%;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.16);border-radius:2px;
   background:rgba(255,255,255,.06);color:#fff;font-family:var(--font-body);font-size:.92rem;
 }
+.doc-form select{color:#9aa89a;}
+.doc-form select:valid{color:#fff;}
 .doc-form input::placeholder{color:#9aa89a;}
-.doc-form input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.1);}
+.doc-form input:focus,.doc-form select:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.1);}
 .doc-form .btn{margin-top:.3rem;}
 .doc-success{display:none;background:rgba(242,220,171,.14);color:var(--gold-light);padding:.85rem 1rem;font-size:.85rem;border-radius:2px;}
 .doc-success.is-active{display:block;}
