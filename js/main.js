@@ -242,3 +242,26 @@ if (heroForm) {
     goToThankYou();
   });
 }
+
+// ===== CTA ngữ cảnh giữa trang (sau Vị trí/Tiện ích/Mặt bằng/Chủ đầu tư) =====
+// Gửi thẳng tại chỗ thay vì cuộn xuống #lien-he. Chỉ hỏi SĐT nên payload
+// không có "name"; data-source trên mỗi form cho biết khách rời trang ở
+// đoạn nội dung nào để sale có thêm ngữ cảnh khi gọi.
+document.querySelectorAll('.midpage-cta-form').forEach((form) => {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) return;
+    if (isSuspectedBot_(form, PAGE_LOAD_TIME)) return;
+
+    const formData = new FormData(form);
+    sendLeadToCRM({
+      source: form.dataset.source || 'CTA giữa trang',
+      phone: formData.get('phone'),
+    });
+
+    const btn = form.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Đã ghi nhận, cảm ơn bạn!';
+    goToThankYou();
+  });
+});

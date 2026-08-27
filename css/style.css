@@ -304,6 +304,16 @@ p strong{color:var(--ink);}
 }
 .midpage-cta-text{color:#dbe3d6;font-size:1rem;margin:0;}
 .midpage-cta .btn{flex-shrink:0;}
+/* Gửi thẳng tại chỗ thay vì cuộn xuống #lien-he — chỉ hỏi SĐT để giữ độ ma
+   sát thấp đúng tinh thần "chặn ngang, tiện tay điền" của khối CTA giữa
+   trang, không phải form đầy đủ như form cuối trang. */
+.midpage-cta-form{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+.midpage-cta-form input{
+  width:200px;padding:.7rem .9rem;border:1px solid rgba(255,255,255,.2);border-radius:2px;
+  background:rgba(255,255,255,.07);color:#fff;font-family:var(--font-body);font-size:.9rem;
+}
+.midpage-cta-form input::placeholder{color:#9aa89a;}
+.midpage-cta-form input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.12);}
 
 /* ============ SECTIONS ============ */
 .section{padding:5.5rem 0;position:relative;}
@@ -537,7 +547,11 @@ p strong{color:var(--ink);}
    nền trong suốt/trắng như bản cũ), nên bỏ khung nền trắng + padding —
    để lại viền vàng mảnh và bo góc cho đồng bộ với các khối ảnh khác. */
 .tab-panel img{
-  display:block;max-width:420px;margin:0 auto;
+  /* min(420px,100%) chứ không phải max-width:420px đơn thuần - giá trị cố
+     định đó đè mất rule an toàn "img{max-width:100%}" ở đầu file (selector
+     cụ thể hơn thắng), nên trên màn hình hẹp hơn 420px ảnh vẫn ép render
+     đúng 420px và tràn ra ngoài .tab-panel. */
+  display:block;max-width:min(420px, 100%);margin:0 auto;
   border:1px solid rgba(242,220,171,.25);border-radius:var(--radius);
 }
 .tab-panel-info h3{color:#fff;}
