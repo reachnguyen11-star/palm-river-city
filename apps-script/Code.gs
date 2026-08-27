@@ -161,6 +161,12 @@ function doPost(e) {
                       '. Kiểm tra cột ' + COL.SO_DIEN_THOAI + ' có bị khoá hoặc bảo vệ không.');
     }
 
+    // Bắn conversion "tầng 1" (lead thô, ngay lúc phát sinh) về MGID qua
+    // Postback. Xem giải thích đầy đủ 2 tầng ở khối comment lớn phía dưới
+    // file. guiMgidPostback_ tự log lỗi bên trong, không throw, nên không
+    // ảnh hưởng tới việc ghi lead hay response trả về dù bắn postback lỗi.
+    guiMgidPostback_(layClickIdMgid_(data.page_url), MGID_POSTBACK_URL_TANG_1);
+
     return ContentService
       .createTextOutput(JSON.stringify({ result: 'success', row: row, phone: ghiDuoc }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -254,25 +260,40 @@ function testGhiThu() {
  *    theo custom conversion "Lead xác nhận" cạnh "Lead" để so sánh, rồi cân
  *    nhắc đổi mục tiêu tối ưu chiến dịch nếu đủ volume (khi nào có chạy Meta).
  *
- * VỀ MGID / SMARTADS
- * Hai mạng này hiện tính conversion theo "URL đích" (khách vào cam-on.html),
- * không phải theo sự kiện JS như Meta, nên không thể chỉ thêm dòng code là
- * xong — cần họ có cơ chế postback/S2S theo click ID mới bắn được conversion
- * thứ hai. Việc cần làm (ngoài phạm vi sửa code): hỏi account manager MGID
- * và SmartAds/eClick câu hỏi cụ thể "có hỗ trợ postback conversion qua click
- * ID không, endpoint dạng gì". Có endpoint thật thì điền vào
- * MGID_POSTBACK_URL_TEMPLATE bên dưới, hàm guiMgidPostback_ sẽ tự dùng —
- * click ID của MGID (tham số "mglnd") đã có sẵn trong cột LINK_CHUYEN_DOI
- * (cột 4) vì đó là URL đầy đủ khách bấm gửi form.
+ * VỀ MGID — ĐÃ CÀI XONG, DÙNG POSTBACK CHO CẢ 2 TẦNG
+ * Khác với dự đoán ban đầu, tài khoản MGID của dự án đã chuyển hẳn sang
+ * "phương pháp theo dõi" là Postback cho toàn bộ conversion goal (không còn
+ * chạy song song với Pixel/MgSensor như mặc định cũ). Vì vậy CẢ tầng 1 lẫn
+ * tầng 2 đều bắn qua Postback — không chỉ tầng 2 như bản thiết kế đầu tiên:
+ *   - Tầng 1 (Lead thô): bắn NGAY trong doPost(), lúc lead vừa vào sheet —
+ *     xem cuối hàm doPost() phía trên.
+ *   - Tầng 2 (Lead xác nhận): bắn trễ trong quetLeadDuDieuKienHangNgay() như
+ *     thiết kế ban đầu.
+ * Click ID của MGID nằm ở tham số "adclid" (xác nhận trực tiếp từ dashboard
+ * MGID của dự án, KHÔNG PHẢI "mglnd" như suy đoán lúc đầu) — đã có sẵn trong
+ * cột LINK_CHUYEN_DOI (cột 4) vì đó là URL đầy đủ khách bấm gửi form.
+ *
+ * CẢNH BÁO — CẦN BẠN TỰ KIỂM TRA: nếu dashboard MGID trước đây có khai báo
+ * "/cam-on.html là Conversion Page" song song với MgSensor script (xem
+ * cam-on.html), cấu hình đó có thể vẫn đang đếm conversion riêng, gây đếm
+ * trùng với Postback tầng 1 mới này. Kiểm tra trong campaign MGID xem khai
+ * báo Conversion Page cũ còn bật không, tắt đi nếu Postback đã thay thế nó.
+ *
+ * VỀ SMARTADS: chưa xác nhận có hỗ trợ Postback hay không, vẫn ngoài phạm vi
+ * sửa code cho tới khi có endpoint thật.
  * ============================================================================
  */
 
 var META_PIXEL_IDS = ['3392425294339402', '3415976945217817'];
 var META_CAPI_ACCESS_TOKEN = ''; // TODO: dán access token lấy từ Meta Events Manager
 
-// TODO: điền khi MGID/eClick xác nhận có endpoint postback, ví dụ dạng
-// 'https://postback.mgid.com/xxx?click_id={CLICK_ID}'. Để trống = bỏ qua.
-var MGID_POSTBACK_URL_TEMPLATE = '';
+// URL postback thật, lấy từ dashboard MGID (Conversion tracking -> Tracking
+// settings -> Postback) ngày 27/08/2026. Phần "&r={revenue}" trong URL gốc
+// MGID đưa ra bị bỏ vì code không có giá trị đơn thật/lead để điền — MGID sẽ
+// tự áp giá trị tĩnh đã cấu hình sẵn cho từng goal (0$ tầng 1, 50$ tầng 2)
+// khi không có tham số r trong lần gọi.
+var MGID_POSTBACK_URL_TANG_1 = 'https://a.mgid.com/postback/972838?c={CLICK_ID}&e=Lead';
+var MGID_POSTBACK_URL_TANG_2 = 'https://a.mgid.com/postback/972838?c={CLICK_ID}&e=Lead_qualified';
 
 // Giá trị nào trong dropdown cột Status được coi là "lead thật, đáng tối ưu
 // theo" — hiện chỉ có "Quan tâm". Dùng mảng để sau này thêm biến thể (ví dụ
@@ -314,11 +335,14 @@ function quetLeadDuDieuKienHangNgay() {
     var phone = sheet.getRange(row, COL.SO_DIEN_THOAI).getDisplayValue();
     var pageUrl = sheet.getRange(row, COL.LINK_CHUYEN_DOI).getValue();
 
-    var ok = guiMetaCapi_(name, phone, pageUrl);
-    if (ok && MGID_POSTBACK_URL_TEMPLATE) {
-      guiMgidPostback_(layClickIdMgid_(pageUrl));
-    }
-    if (ok) { statusCell.setNote('da_gui_capi'); soDaGui++; }
+    // Meta CAPI và MGID Postback là 2 kênh độc lập, không phụ thuộc lẫn nhau —
+    // trước đây MGID chỉ bắn khi Meta thành công, nhưng dự án không chạy Meta
+    // Ads (META_CAPI_ACCESS_TOKEN để trống) nên guiMetaCapi_ luôn trả false,
+    // nếu vẫn gate theo "ok" thì MGID (kênh đang thật sự dùng) sẽ không bao
+    // giờ được đánh dấu đã gửi, bị gửi lại lỗi mỗi ngày.
+    var metaOk = guiMetaCapi_(name, phone, pageUrl);
+    var mgidOk = guiMgidPostback_(layClickIdMgid_(pageUrl), MGID_POSTBACK_URL_TANG_2);
+    if (metaOk || mgidOk) { statusCell.setNote('da_gui_capi'); soDaGui++; }
   }
   Logger.log('[Lead xác nhận] Đã gửi conversion cho ' + soDaGui + ' dòng.');
 }
@@ -394,23 +418,31 @@ function sha256Hex_(text) {
   }).join('');
 }
 
-/** Lấy tham số "mglnd" (click ID của MGID) từ URL trang khách gửi form. */
+/** Lấy tham số "adclid" (click ID của MGID) từ URL trang khách gửi form. */
 function layClickIdMgid_(pageUrl) {
-  var m = String(pageUrl || '').match(/[?&]mglnd=([^&]+)/);
+  var m = String(pageUrl || '').match(/[?&]adclid=([^&]+)/);
   return m ? decodeURIComponent(m[1]) : '';
 }
 
-/** Chỉ chạy khi đã điền MGID_POSTBACK_URL_TEMPLATE — xem hướng dẫn ở đầu khối này. */
-function guiMgidPostback_(clickId) {
+/**
+ * Gửi postback về MGID cho 1 trong 2 goal (truyền MGID_POSTBACK_URL_TANG_1
+ * hoặc _TANG_2 vào urlTemplate). Trả về true/false để nơi gọi biết có nên
+ * đánh dấu "đã gửi" hay không — false thì nên thử lại (xem
+ * quetLeadDuDieuKienHangNgay).
+ */
+function guiMgidPostback_(clickId, urlTemplate) {
+  if (!urlTemplate) return false;
   if (!clickId) {
-    Logger.log('[MGID postback] Không tìm thấy click ID (mglnd) trong URL, bỏ qua.');
-    return;
+    Logger.log('[MGID postback] Không tìm thấy click ID (adclid) trong URL, bỏ qua.');
+    return false;
   }
-  var url = MGID_POSTBACK_URL_TEMPLATE.replace('{CLICK_ID}', encodeURIComponent(clickId));
+  var url = urlTemplate.replace('{CLICK_ID}', encodeURIComponent(clickId));
   try {
     var res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
     Logger.log('[MGID postback] ' + res.getResponseCode() + ' ' + res.getContentText());
+    return res.getResponseCode() < 300;
   } catch (err) {
     Logger.log('[MGID postback] lỗi: ' + err.message);
+    return false;
   }
 }

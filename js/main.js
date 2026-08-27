@@ -183,16 +183,6 @@ function isSuspectedBot_(form, readySince) {
   return false;
 }
 
-// ===== Nhận diện traffic MGID để xử lý "hâm nóng" riêng =====
-// Khách từ MGID là traffic tò mò từ native ads/content-discovery, chưa có
-// intent tìm mua như khách từ Google/Meta. Đưa thẳng vào popup xin SĐT
-// (friction thấp) ngay khi vừa vào trang dễ tạo lead rác. Dò qua utm_source/
-// utm_medium vì URL quảng cáo MGID luôn gắn 1 trong 2 giá trị này.
-const IS_MGID_TRAFFIC = (() => {
-  const p = new URLSearchParams(location.search);
-  const src = `${p.get('utm_source') || ''} ${p.get('utm_medium') || ''}`.toLowerCase();
-  return src.includes('mgid');
-})();
 
 // ===== Contact form =====
 const contactForm = document.getElementById('contactForm');
@@ -230,132 +220,25 @@ document.querySelectorAll('.goal-cta').forEach(btn => {
   });
 });
 
-// ===== Lead magnet popup =====
-const docOverlay = document.getElementById('docOverlay');
-const docModal = document.getElementById('docModal');
-const docClose = document.getElementById('docClose');
-const docForm = document.getElementById('docForm');
-const docSuccess = document.getElementById('docSuccess');
+// ===== Form thu lead nhanh trong hero (thay cho popup đã bỏ) =====
+const heroForm = document.getElementById('heroForm');
+const heroFormSuccess = document.getElementById('heroFormSuccess');
+if (heroForm) {
+  heroForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!heroForm.checkValidity()) return;
+    if (isSuspectedBot_(heroForm, PAGE_LOAD_TIME)) return;
 
-let docTl = null;
-let docPopupOpenedAt = 0; // reset mỗi lần popup mở, dùng cho check chống bot
-
-function buildDocTimeline() {
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const tl = gsap.timeline({ paused: true });
-  if (reduced) {
-    tl.set(docOverlay, { opacity: 1, visibility: 'visible' });
-    return tl;
-  }
-  tl.set(docOverlay, { visibility: 'visible' })
-    .fromTo(docOverlay, { opacity: 0 }, { opacity: 1, duration: .35, ease: 'power1.out' })
-    .fromTo(docModal, { opacity: 0, y: 28, scale: .96 }, { opacity: 1, y: 0, scale: 1, duration: .5, ease: 'power3.out' }, '<')
-    .fromTo('.doc-checklist li', { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: .4, stagger: .06, ease: 'power2.out' }, '-=.25')
-    .fromTo('.doc-form > *', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .35, stagger: .05, ease: 'power2.out' }, '-=.3');
-  return tl;
-}
-
-function openDocPopup() {
-  if (docOverlay.classList.contains('is-active')) return;
-  docOverlay.classList.add('is-active');
-  document.body.style.overflow = 'hidden';
-  docPopupOpenedAt = Date.now();
-  docTl = buildDocTimeline();
-  docTl.play();
-}
-
-function closeDocPopup() {
-  if (!docOverlay.classList.contains('is-active')) return;
-  document.body.style.overflow = '';
-  const finish = () => {
-    docOverlay.classList.remove('is-active');
-    gsap.set(docOverlay, { visibility: 'hidden' });
-  };
-  if (docTl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    gsap.to([docModal, docOverlay], {
-      opacity: 0, duration: .25, ease: 'power1.in', onComplete: finish,
+    const formData = new FormData(heroForm);
+    sendLeadToCRM({
+      source: 'Form hero',
+      name: formData.get('name'),
+      phone: formData.get('phone'),
+      need: formData.get('need'),
     });
-  } else {
-    finish();
-  }
-}
 
-docClose.addEventListener('click', closeDocPopup);
-docOverlay.addEventListener('click', (e) => { if (e.target === docOverlay) closeDocPopup(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDocPopup(); });
-
-docForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (!docForm.checkValidity()) return;
-  if (isSuspectedBot_(docForm, docPopupOpenedAt)) return;
-
-  const formData = new FormData(docForm);
-  sendLeadToCRM({
-    source: 'Popup nhận tài liệu',
-    name: formData.get('name'),
-    phone: formData.get('phone'),
-    need: formData.get('need'),
-    budget: formData.get('budget'),
-  });
-
-  docSuccess.classList.add('is-active');
-  docForm.querySelector('button').disabled = true;
-  goToThankYou();
-});
-
-// Auto-trigger once per session: after a delay, or at ~45% scroll depth, whichever comes first.
-// autoPopupTimer/autoPopupScrollTrigger khai báo ở scope ngoài (thay vì bên
-// trong khối if) để nút CTA hero bên dưới cũng huỷ được lịch tự động này,
-// tránh popup bật lần hai ngay sau khi khách vừa tự đóng.
-//
-// Traffic MGID chưa có context/intent như khách từ Google/Meta, xin SĐT quá
-// sớm (15s, chỉ vừa đọc hero) dễ ra lead rác/bấm nhầm. Traffic này được cho
-// thêm thời gian đọc nội dung + phải cuộn sâu hơn hẳn (qua khỏi khối "mục
-// tiêu của bạn") trước khi popup mới tự bật.
-const POPUP_FLAG = 'palmriver_doc_popup_shown';
-const POPUP_AUTO_DELAY_MS = IS_MGID_TRAFFIC ? 45000 : 15000;
-const POPUP_SCROLL_START = IS_MGID_TRAFFIC ? '75% top' : '45% top';
-let autoPopupTimer = null;
-let autoPopupScrollTrigger = null;
-if (!sessionStorage.getItem(POPUP_FLAG)) {
-  const markShown = () => sessionStorage.setItem(POPUP_FLAG, '1');
-
-  autoPopupTimer = setTimeout(() => {
-    if (autoPopupScrollTrigger) autoPopupScrollTrigger.kill();
-    openDocPopup();
-    markShown();
-  }, POPUP_AUTO_DELAY_MS);
-
-  autoPopupScrollTrigger = ScrollTrigger.create({
-    trigger: document.body,
-    start: POPUP_SCROLL_START,
-    once: true,
-    onEnter: () => {
-      clearTimeout(autoPopupTimer);
-      openDocPopup();
-      markShown();
-    },
-  });
-}
-
-// CTA chính ở hero mở thẳng popup nhận tài liệu thay vì cuộn xuống form
-// cuối trang. Đánh dấu đã hiện + huỷ lịch tự động, tránh popup tự bật lại
-// ngay sau khi khách vừa chủ động đóng.
-//
-// Riêng traffic MGID: chưa từng thấy tên dự án trước khi bấm (click từ tiêu
-// đề gợi tò mò trên native ads), mở thẳng popup xin SĐT lúc này là xin quá
-// sớm. Đưa họ tới khối "mục tiêu của bạn" (#muc-tieu) để tự chọn "Mua để ở"
-// hay "Đầu tư" trước — vừa cho thêm ngữ cảnh, vừa tự lọc bớt người chỉ tò mò.
-const heroOpenPopup = document.getElementById('heroOpenPopup');
-if (heroOpenPopup) {
-  heroOpenPopup.addEventListener('click', () => {
-    if (IS_MGID_TRAFFIC) {
-      document.getElementById('muc-tieu').scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
-    sessionStorage.setItem(POPUP_FLAG, '1');
-    clearTimeout(autoPopupTimer);
-    if (autoPopupScrollTrigger) autoPopupScrollTrigger.kill();
-    openDocPopup();
+    heroFormSuccess.classList.add('is-active');
+    heroForm.querySelector('button').disabled = true;
+    goToThankYou();
   });
 }

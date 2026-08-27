@@ -105,10 +105,46 @@ a.load=function(b,d)
   <div class="hero-bg"></div>
   <div class="hero-scrim"></div>
   <div class="hero-cta-wrap reveal">
-    <div class="hero-actions">
-      <!-- Mo thang popup nhan tai lieu thay vi cuon xuong form, xem js/main.js -->
-      <button type="button" class="btn btn-gold" id="heroOpenPopup">Nhận bảng giá gốc đợt 1 - Ưu đãi đợt 1</button>
-      <a href="#tong-quan" class="btn btn-outline">Khám phá dự án</a>
+    <!-- Form thu lead nhanh ngay trong hero, thay cho popup đã bỏ (xem
+         js/main.js). Cùng cơ chế gửi CRM + chống bot với #contactForm. -->
+    <div class="hero-quick-form">
+      <div class="offer-box" data-offer hidden>
+        <p class="offer-title" data-offer-title></p>
+        <div class="offer-perks" data-offer-perks></div>
+        <div class="offer-cd">
+          <div class="cd-unit"><span class="cd-num" data-cd="d">--</span><span class="cd-lb">Ngày</span></div>
+          <div class="cd-unit"><span class="cd-num" data-cd="h">--</span><span class="cd-lb">Giờ</span></div>
+          <div class="cd-unit"><span class="cd-num" data-cd="m">--</span><span class="cd-lb">Phút</span></div>
+          <div class="cd-unit"><span class="cd-num" data-cd="s">--</span><span class="cd-lb">Giây</span></div>
+        </div>
+        <p class="offer-note" data-offer-note></p>
+      </div>
+      <form class="doc-form hero-form-fields" id="heroForm">
+        <div class="hero-form-row">
+          <input type="text" name="name" required placeholder="Họ và tên *">
+          <input type="tel" name="phone" required placeholder="Số điện thoại *" pattern="0(3[2-9]|5[25689]|7[06-9]|8[1-9]|9[0-9])[0-9]{7}" title="Số di động Việt Nam, 10 số, bắt đầu bằng 0">
+        </div>
+        <div class="hero-form-row">
+          <select name="need" required>
+            <option value="" disabled selected>Loại hình quan tâm *</option>
+            <option>Mua để ở</option>
+            <option>Đầu tư</option>
+            <option>Cho thuê</option>
+          </select>
+          <button type="submit" class="btn btn-gold">Nhận tài liệu tư vấn</button>
+        </div>
+        <!-- Honeypot chống bot, xem chú thích tương tự ở #contactForm. -->
+        <div class="hp-field" aria-hidden="true">
+          <label>Công ty<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <p class="doc-success" id="heroFormSuccess">Đã ghi nhận thông tin, cảm ơn bạn. Tài liệu sẽ được gửi trong thời gian sớm nhất.</p>
+      </form>
+      <!-- partner:cut -->
+      <p class="doc-secure"><svg viewBox="0 0 24 24" width="14" height="14" fill="none"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.6"/></svg>Khi gửi thông tin, bạn đồng ý để chúng tôi liên hệ tư vấn và đồng ý với <a href="chinh-sach-bao-mat">Chính sách bảo mật</a>.</p>
+      <!-- /partner:cut -->
+      <!-- partner:only
+      <p class="doc-secure"><svg viewBox="0 0 24 24" width="14" height="14" fill="none"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.6"/></svg>Khi gửi thông tin, bạn đồng ý để chúng tôi liên hệ tư vấn về dự án.</p>
+      /partner:only -->
     </div>
   </div>
   <a href="#tong-quan" class="scroll-cue" aria-label="Cuộn xuống"><span></span></a>
@@ -724,71 +760,6 @@ a.load=function(b,d)
   </a>
 </div>
 <!-- /partner:cut -->
-
-<!-- ============ LEAD MAGNET POPUP ============ -->
-<div class="doc-overlay" id="docOverlay">
-  <div class="doc-modal" id="docModal">
-    <button class="doc-close" id="docClose" aria-label="Đóng">&times;</button>
-    <div class="doc-panel doc-panel-form">
-      <p class="doc-eyebrow">Nhận trọn bộ tài liệu dự án</p>
-      <h3 class="doc-title">Hồ sơ đầy đủ &amp; tư vấn <span class="accent-script">1:1</span> từ chuyên gia</h3>
-      <ul class="doc-checklist">
-        <li>Brochure thông tin chi tiết &amp; tiện ích dự án</li>
-        <li>Bản đồ vị trí &amp; quy hoạch hạ tầng dự án</li>
-        <li>Mặt bằng tổng thể &amp; vị trí từng căn</li>
-        <li>Tài liệu tư vấn sản phẩm &amp; phương án dòng tiền</li>
-        <li>Chính sách bán hàng &amp; hỗ trợ lãi suất</li>
-        <li>Hồ sơ pháp lý theo công bố của chủ đầu tư</li>
-      </ul>
-      <div class="offer-box" data-offer hidden>
-        <p class="offer-title" data-offer-title></p>
-        <div class="offer-perks" data-offer-perks></div>
-        <div class="offer-cd">
-          <div class="cd-unit"><span class="cd-num" data-cd="d">--</span><span class="cd-lb">Ngày</span></div>
-          <div class="cd-unit"><span class="cd-num" data-cd="h">--</span><span class="cd-lb">Giờ</span></div>
-          <div class="cd-unit"><span class="cd-num" data-cd="m">--</span><span class="cd-lb">Phút</span></div>
-          <div class="cd-unit"><span class="cd-num" data-cd="s">--</span><span class="cd-lb">Giây</span></div>
-        </div>
-        <p class="offer-note" data-offer-note></p>
-      </div>
-      <form class="doc-form" id="docForm">
-        <input type="text" name="name" required placeholder="Họ và tên *">
-        <input type="tel" name="phone" required placeholder="Số điện thoại *" pattern="0(3[2-9]|5[25689]|7[06-9]|8[1-9]|9[0-9])[0-9]{7}" title="Số di động Việt Nam, 10 số, bắt đầu bằng 0">
-        <select name="need" required>
-          <option value="" disabled selected>Anh/chị quan tâm để... *</option>
-          <option>Mua để ở</option>
-          <option>Đầu tư</option>
-          <option>Cho thuê</option>
-        </select>
-        <!-- Để optional (không required) để không tăng thêm friction cho
-             popup vốn cần nhẹ, nhanh — khác với #contactForm là form chính. -->
-        <select name="budget">
-          <option value="">Ngân sách dự kiến (không bắt buộc)</option>
-          <option>Từ 5.5 tỷ</option>
-          <option>Từ 5.5 - 8 tỷ</option>
-          <option>Từ 8 - 13 tỷ</option>
-          <option>Trên 13 tỷ</option>
-        </select>
-        <!-- Honeypot chống bot, xem chú thích tương tự ở #contactForm. -->
-        <div class="hp-field" aria-hidden="true">
-          <label>Công ty<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
-        </div>
-        <button type="submit" class="btn btn-gold btn-block">Nhận tài liệu tư vấn</button>
-        <p class="doc-success" id="docSuccess">Đã ghi nhận thông tin, cảm ơn bạn. Tài liệu sẽ được gửi trong thời gian sớm nhất.</p>
-      </form>
-      <!-- partner:cut -->
-      <p class="doc-secure"><svg viewBox="0 0 24 24" width="14" height="14" fill="none"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.6"/></svg>Thông tin của bạn chỉ dùng để tư vấn dự án. Xem <a href="chinh-sach-bao-mat">Chính sách bảo mật</a>.</p>
-      <!-- /partner:cut -->
-      <!-- partner:only
-      <p class="doc-secure"><svg viewBox="0 0 24 24" width="14" height="14" fill="none"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.6"/></svg>Thông tin của bạn chỉ dùng để tư vấn dự án.</p>
-      /partner:only -->
-    </div>
-    <div class="doc-panel doc-panel-media">
-      <span class="doc-badge">★ Chủ đầu tư</span>
-      <img src="images/gallery/river-1.webp" alt="Palm River nhìn từ trên cao">
-    </div>
-  </div>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>

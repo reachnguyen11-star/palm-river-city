@@ -238,7 +238,7 @@ p strong{color:var(--ink);}
 }
 .hero-bg{
   position:absolute;inset:0;background-size:cover;background-position:center center;
-  background-image:url('../images/hero-pc.webp');
+  background-image:url('../images/sub_banner_pc.webp');
 }
 .hero-scrim{
   position:absolute;inset:0;
@@ -246,14 +246,28 @@ p strong{color:var(--ink);}
     linear-gradient(180deg, rgba(11,22,5,.5) 0%, rgba(11,22,5,0) 24%),
     linear-gradient(0deg, rgba(11,22,5,.6) 0%, rgba(11,22,5,0) 40%);
 }
-/* Dải trống bên phải tag "Ga Bình Trung", dưới dòng "tại trung tâm TP.HCM"
-   và trên cụm tháp — lệch trái so với tâm ảnh nhưng không đứng cô lập ở
-   góc dưới như khi đặt tại top:60%. */
+/* Ảnh banner mới có chữ và khung trang trí ở giữa/trên, nên neo khối form
+   xuống đáy hero thay vì đặt giữa ảnh như bản cũ, tránh đè lên chữ có sẵn
+   trong ảnh. */
 .hero-cta-wrap{
-  position:absolute;z-index:2;left:32%;top:38%;
-  display:flex;flex-direction:column;align-items:flex-start;gap:1rem;
+  position:absolute;z-index:2;left:50%;bottom:4.5vh;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:stretch;gap:1rem;width:100%;
+  max-width:440px;padding:0 1.2rem;
 }
-.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:flex-start;}
+
+/* Form thu lead nhanh ngay trong hero, thay cho popup đã bỏ. Tái dùng field
+   style của .doc-form (input/select nền tối) để đồng bộ với phần còn lại
+   của site, chỉ thêm layout 2 cột riêng cho khối này. */
+.hero-quick-form{
+  background:rgba(11,22,5,.6);backdrop-filter:blur(10px);
+  border:1px solid rgba(242,220,171,.3);border-radius:var(--radius-lg);
+  padding:1.5rem 1.5rem 1.3rem;box-shadow:0 24px 60px rgba(0,0,0,.4);
+}
+.hero-quick-form .offer-box{margin-bottom:1.1rem;}
+.hero-form-fields{display:flex;flex-direction:column;gap:.7rem;}
+.hero-form-row{display:flex;gap:.7rem;}
+.hero-form-row > *{flex:1 1 0;min-width:0;}
+.hero-form-row .btn{margin-top:0;}
 
 .scroll-cue{
   position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);z-index:2;
@@ -818,12 +832,14 @@ p strong{color:var(--ink);}
   .offer-cd{gap:.4rem;}
   .cd-unit{min-width:0;flex:1 1 0;}
   .cd-num{font-size:1.4rem;}
-  /* transform:none để huỷ translateX(-50%) canh giữa của bản desktop — nếu
-     không, kết hợp với left/right cố định ở đây sẽ đẩy lệch thanh CTA. */
-  .hero-cta-wrap{left:1.2rem;right:1.2rem;top:auto;bottom:6rem;transform:none;align-items:stretch;}
-  .hero-actions{justify-content:center;flex-direction:column;}
-  .hero-actions .btn{width:100%;}
-  .hero-bg{background-image:url('../images/hero-mobile.webp');background-position:right center;}
+  /* Bản desktop của .hero-cta-wrap đã canh giữa + giới hạn max-width + có
+     padding ngang riêng, dùng được luôn cho mobile không cần override thêm —
+     chỉ hạ bớt khoảng cách đáy vì màn hình thấp hơn. */
+  .hero-cta-wrap{bottom:2.5vh;}
+  .hero-quick-form{padding:1.2rem 1.2rem 1.1rem;}
+  /* 2 cột (tên+sđt, dropdown+nút) quá chật trên màn hẹp, chữ trong select
+     bị cắt — xếp dọc thay vì ép ngang. */
+  .hero-form-row{flex-direction:column;}
   .pc-statement{padding-top:3.5rem;}
   .pc-cta{width:100%;justify-content:space-between;}
   .pc-birds{display:none;}
