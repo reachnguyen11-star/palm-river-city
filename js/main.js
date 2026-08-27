@@ -38,11 +38,19 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
     revealEls.splice(revealEls.indexOf(el), 1);
   };
 
+  // threshold: 0 (không phải .15) - bắt buộc, vì threshold tính theo % DIỆN
+  // TÍCH CỦA CHÍNH PHẦN TỬ chứ không phải % viewport. Với khối cao hơn hẳn
+  // viewport (vd .amenity-photo-grid trên mobile ~5464px, 20 ảnh xếp 1 cột),
+  // 15% chiều cao của nó có thể lớn hơn cả phần viewport khả dụng sau khi
+  // trừ rootMargin - tức threshold không bao giờ đạt được, phần tử kẹt
+  // opacity:0 vĩnh viễn dù ảnh bên trong đã tải xong (trông như "chậm/không
+  // load" nhưng thực ra là kẹt vô hình). threshold:0 kích hoạt ngay khi vừa
+  // chạm rootMargin, không phụ thuộc chiều cao phần tử.
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) reveal(entry.target, true);
     });
-  }, { threshold: .15, rootMargin: '0px 0px -10% 0px' });
+  }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
   revealEls.forEach((el) => revealObserver.observe(el));
 
   // Catch-up pass: jumping to an #anchor can carry an element from below the fold
