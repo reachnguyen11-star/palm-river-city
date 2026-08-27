@@ -12,7 +12,7 @@
 |---|---|---|
 | **Hạn chót ưu đãi** | `30/08/2026` (hết ngày, 23:59) | Đã chốt. Countdown đang đếm về mốc này |
 | **Chiết khấu** | `đến 16.5%` | Đã chốt |
-| **Vốn ban đầu** | `chỉ 10%` | Đã chốt |
+| **Tổng giá căn** | `chỉ từ 5.5 tỷ` | Đã chốt (thay "Vốn ban đầu chỉ 10%" cũ) |
 | **Tên gọi đợt** | `đợt đầu` | Hoặc: "đợt mở bán đầu tiên", "giai đoạn 1" |
 | **Điều kiện áp dụng** | *(chưa có)* | VD: áp dụng cho khách ký HĐĐC trước hạn |
 
@@ -25,8 +25,8 @@ var CAU_HINH = {
   hanChot: '2026-08-30T23:59:59+07:00',   // ← đổi hạn chót ở đây
   tieuDe:  'Chính sách ưu đãi đợt đầu',
   uuDai: [                                 // ← thêm/bớt/sửa điểm nhấn ở đây
-    { nhan: 'Chiết khấu đến',   so: '16.5%' },
-    { nhan: 'Vốn ban đầu chỉ',  so: '10%' },
+    { nhan: 'Chiết khấu đến',        so: '16.5%' },
+    { nhan: 'Tổng giá căn chỉ từ',   so: '5.5 tỷ' },
   ],
   ...
 };
@@ -45,7 +45,7 @@ Vị trí: ngay trên form điền thông tin trong popup.
 
 ```
         CHÍNH SÁCH ƯU ĐÃI ĐỢT ĐẦU
-   ( Chiết khấu đến 16.5% ) ( Vốn ban đầu chỉ 10% )
+   ( Chiết khấu đến 16.5% ) ( Tổng giá căn chỉ từ 5.5 tỷ )
       ┌────┐   ┌────┐   ┌────┐
       │ 11 │   │ 14 │   │ 14 │
       │NGÀY│   │ GIỜ│   │PHÚT│
@@ -98,19 +98,12 @@ bỏ chữ "đến". Nếu 16.5% là tổng của nhiều khoản cộng lại (
 đầu + khách hàng thân thiết...) thì nên ghi rõ **"tổng chiết khấu đến 16.5%"** để
 không bị hiểu là chiết khấu trực tiếp trên giá.
 
-**Về "Vốn ban đầu chỉ 10%":** đây là câu dễ gây hiểu nhầm nhất trong bộ ưu đãi.
-Bạn viết ban đầu là *"vốn ban đầu chỉ 10% sở hữu"* — câu này có thể bị đọc thành
-"sở hữu 10% căn hộ". Tôi đã đổi thành **"Vốn ban đầu chỉ 10%"** trên trang.
-
-Cần bạn xác nhận ý đúng là gì để chốt câu chữ:
-
-- ☐ Thanh toán 10% khi ký HĐMB, phần còn lại theo tiến độ
-- ☐ Thanh toán 10%, ngân hàng cho vay phần còn lại, CĐT hỗ trợ lãi suất
-- ☐ Khác: ................................
-
-Nếu có ân hạn gốc/lãi thì nên nói thẳng con số (VD "ân hạn gốc 24 tháng") vì đó
-mới là điều nhóm đầu tư thực sự tính toán. Riêng phần vay ngân hàng, nếu có nhắc
-thì phải kèm điều kiện, tránh bị xem là quảng cáo sản phẩm tín dụng thiếu thông tin.
+**Về "Tổng giá căn chỉ từ 5.5 tỷ"** (thay cho "Vốn ban đầu chỉ 10%" cũ — đổi
+theo yêu cầu 27/08/2026, vì câu cũ dễ bị đọc nhầm thành "sở hữu 10% căn hộ").
+Con số 5.5 tỷ khớp với mốc "giá căn nhỏ nhất" đã dùng ở dropdown ngân sách
+trong form (`index.html`), nên không phát sinh số liệu mới cần đối chiếu
+thêm — chỉ cần đảm bảo 5.5 tỷ vẫn đúng với giá thực tế CĐT công bố tại thời
+điểm hiển thị.
 
 ---
 

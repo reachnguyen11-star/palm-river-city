@@ -233,7 +233,7 @@ p strong{color:var(--ink);}
 
 /* ============ HERO ============ */
 .hero{
-  position:relative;min-height:100vh;display:flex;align-items:center;
+  position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;
   overflow:hidden;color:#fff;
 }
 .hero-bg{
@@ -246,13 +246,14 @@ p strong{color:var(--ink);}
     linear-gradient(180deg, rgba(11,22,5,.5) 0%, rgba(11,22,5,0) 24%),
     linear-gradient(0deg, rgba(11,22,5,.6) 0%, rgba(11,22,5,0) 40%);
 }
-/* Ảnh banner mới có chữ và khung trang trí ở giữa/trên, nên neo khối form
-   xuống đáy hero thay vì đặt giữa ảnh như bản cũ, tránh đè lên chữ có sẵn
-   trong ảnh. */
+/* Desktop: ảnh có tiêu đề nằm nửa trái, kết thúc ở dòng "Bến Thành - Long
+   Thành" khoảng 40% chiều cao — đặt form ngay dưới, lệch trái theo đúng
+   khối chữ, không che tháp/ảnh bên phải. Mobile override riêng bên dưới vì
+   ảnh mobile là crop dọc khác hẳn bố cục. */
 .hero-cta-wrap{
-  position:absolute;z-index:2;left:50%;bottom:4.5vh;transform:translateX(-50%);
-  display:flex;flex-direction:column;align-items:stretch;gap:1rem;width:100%;
-  max-width:440px;padding:0 1.2rem;
+  position:absolute;z-index:2;left:4%;top:42%;
+  display:flex;flex-direction:column;align-items:stretch;gap:1rem;
+  width:100%;max-width:440px;
 }
 
 /* Form thu lead nhanh ngay trong hero, thay cho popup đã bỏ. Tái dùng field
@@ -287,6 +288,19 @@ p strong{color:var(--ink);}
 .wave-into-forest path{fill:var(--forest);}
 .wave-into-white path{fill:var(--white);}
 .hero + .wave-divider{background:transparent;}
+
+/* ============ CTA NGỮ CẢNH GIỮA TRANG ============ */
+/* Dải mỏng chèn sau 4 section (Vị trí, Tiện ích, Mặt bằng, Chủ đầu tư) —
+   trước đây trang có 9+ section liên tiếp không có điểm chạm nào, khách
+   phải cuộn hết xuống cuối mới thấy form. Nền tối cố định bất kể section
+   trước/sau màu gì, tạo điểm dừng rõ ràng thay vì hoà lẫn vào nền xung quanh. */
+.midpage-cta{background:var(--forest);border-top:1px solid rgba(242,220,171,.18);border-bottom:1px solid rgba(242,220,171,.18);}
+.midpage-cta-inner{
+  display:flex;align-items:center;justify-content:center;gap:1.4rem;
+  flex-wrap:wrap;text-align:center;padding:1.5rem 0;
+}
+.midpage-cta-text{color:#dbe3d6;font-size:1rem;margin:0;}
+.midpage-cta .btn{flex-shrink:0;}
 
 /* ============ SECTIONS ============ */
 .section{padding:5.5rem 0;position:relative;}
@@ -658,42 +672,6 @@ p strong{color:var(--ink);}
 .reveal,.reveal-up{opacity:0;}
 
 /* ============ LEAD MAGNET POPUP ============ */
-.doc-overlay{
-  position:fixed;inset:0;z-index:3000;background:rgba(5,10,4,.72);
-  display:flex;align-items:center;justify-content:center;padding:1.5rem;
-  opacity:0;visibility:hidden;
-}
-.doc-overlay.is-active{visibility:visible;}
-.doc-modal{
-  position:relative;width:100%;max-width:960px;max-height:92vh;overflow-y:auto;
-  background:var(--forest);border:1px solid rgba(242,220,171,.25);border-radius:var(--radius-lg);
-  display:grid;grid-template-columns:1.15fr 1fr;box-shadow:0 30px 80px rgba(0,0,0,.5);
-}
-.doc-close{
-  position:absolute;top:.8rem;right:.8rem;z-index:2;width:34px;height:34px;border-radius:50%;
-  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:1.4rem;
-  line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
-}
-.doc-close:hover{background:rgba(0,0,0,.55);}
-.doc-panel-form{padding:2.6rem 2.6rem 2.2rem;}
-.doc-eyebrow{
-  font-family:var(--font-body);letter-spacing:.16em;text-transform:uppercase;font-size:.72rem;
-  font-weight:600;color:var(--gold-light);margin-bottom:.7rem;
-}
-.doc-title{color:#fff;font-size:1.55rem;text-transform:none;letter-spacing:0;line-height:1.25;margin-bottom:1.3rem;}
-.doc-checklist{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.6rem;}
-.doc-checklist li{
-  position:relative;padding-left:1.7rem;color:#dbe3d6;font-size:.92rem;line-height:1.4;
-}
-.doc-checklist li::before{
-  content:"";position:absolute;left:0;top:.15em;width:16px;height:16px;border-radius:50%;
-  background:rgba(242,220,171,.14);
-}
-.doc-checklist li::after{
-  content:"";position:absolute;left:4px;top:.42em;width:8px;height:5px;
-  border-left:1.6px solid var(--gold-light);border-bottom:1.6px solid var(--gold-light);
-  transform:rotate(-45deg);
-}
 .doc-form{display:flex;flex-direction:column;gap:.8rem;}
 .doc-form input,.doc-form select{
   width:100%;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.16);border-radius:2px;
@@ -716,15 +694,6 @@ p strong{color:var(--ink);}
 }
 /* Icon giữ nguyên kích thước khi dòng chữ xuống hàng. */
 .doc-secure svg{flex-shrink:0;margin-top:.15em;}
-.doc-panel-media{position:relative;overflow:hidden;}
-.doc-panel-media img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
-.doc-badge{
-  position:absolute;top:1.2rem;right:1.2rem;z-index:2;
-  display:inline-flex;align-items:center;gap:.3rem;padding:.4rem .9rem;border-radius:30px;
-  background:rgba(11,22,5,.55);border:1px solid var(--gold-light);color:var(--gold-light);
-  font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-  backdrop-filter:blur(4px);
-}
 
 /* ============ KHỐI ƯU ĐÃI + ĐẾM NGƯỢC ============ */
 /* Mặc định là biến thể tối, dùng trong popup nền Palm Forest.
@@ -818,9 +787,6 @@ p strong{color:var(--ink);}
   .interior-grid{grid-template-columns:1fr 1fr;}
   .interior-card-large{grid-column:1/-1;min-height:420px;}
   .footer-inner{grid-template-columns:1fr;gap:2rem;}
-  .doc-modal{grid-template-columns:1fr;}
-  .doc-panel-media{height:180px;order:-1;}
-  .doc-panel-form{padding:2.2rem 1.6rem;}
 }
 @media (max-width: 620px){
   .amenity-grid{grid-template-columns:1fr;}
@@ -832,10 +798,13 @@ p strong{color:var(--ink);}
   .offer-cd{gap:.4rem;}
   .cd-unit{min-width:0;flex:1 1 0;}
   .cd-num{font-size:1.4rem;}
-  /* Bản desktop của .hero-cta-wrap đã canh giữa + giới hạn max-width + có
-     padding ngang riêng, dùng được luôn cho mobile không cần override thêm —
-     chỉ hạ bớt khoảng cách đáy vì màn hình thấp hơn. */
-  .hero-cta-wrap{bottom:2.5vh;}
+  /* Bản desktop giờ lệch trái + neo theo top% (theo bố cục ảnh desktop) —
+     không hợp với ảnh mobile (crop dọc, bố cục khác hẳn), nên override lại
+     về canh giữa + neo đáy như thiết kế mobile ban đầu. */
+  .hero-cta-wrap{
+    left:50%;top:auto;bottom:2.5vh;transform:translateX(-50%);
+    padding:0 1.2rem;
+  }
   /* Ảnh mobile là crop dọc riêng (941x1672), không phải ảnh desktop scale
      xuống, nên cần đổi hẳn nguồn ảnh thay vì chỉ đổi background-position. */
   .hero-bg{background-image:url('../images/hero-mobile.webp');}
@@ -859,7 +828,7 @@ p strong{color:var(--ink);}
 /* ============ TRANG CẢM ƠN (cam-on.html) ============ */
 .thanks-body{background:var(--forest);}
 .thanks{
-  min-height:100vh;display:flex;align-items:center;padding:8rem 0 4rem;
+  min-height:100vh;min-height:100dvh;display:flex;align-items:center;padding:8rem 0 4rem;
   background-image:radial-gradient(circle at 50% 0%, var(--forest-2), var(--forest) 65%);
 }
 .thanks-inner{max-width:760px;text-align:center;}

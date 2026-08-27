@@ -11,7 +11,13 @@
 <link rel="icon" href="images/brand/favicon-32.jpg" sizes="32x32">
 <link rel="icon" href="images/brand/favicon-192.webp" sizes="192x192">
 <link rel="apple-touch-icon" href="images/brand/favicon-192.webp">
-<link rel="stylesheet" href="css/style.css?v=20260819-uudai">
+<link rel="stylesheet" href="css/style.css?v=20260827-cta">
+
+<!-- Preload ảnh nền hero theo đúng breakpoint CSS đang dùng (620px) để
+     trình duyệt tải sớm, không đợi CSS parse xong mới phát hiện ra
+     background-image - ảnh này gần như chắc chắn là LCP element của trang. -->
+<link rel="preload" as="image" href="images/hero-pc.webp" media="(min-width: 621px)">
+<link rel="preload" as="image" href="images/hero-mobile.webp" media="(max-width: 620px)">
 
 <!-- ============================ TRACKING ============================ -->
 
@@ -71,8 +77,12 @@ a.load=function(b,d)
 </script>
 <!-- End of SmartAds Pixel Code -->
 
-<!-- uhchat: dòng cao tầng -->
-<script src="https://uhchat.net/code.php?f=e76136"></script>
+<!-- uhchat: đã chuyển xuống cuối </body> (xem gần cuối file), giữ nguyên
+     dạng tải đồng bộ vì cả "defer" lẫn tải trễ qua JS đều làm lỗi
+     "Cannot read properties of null" bên trong script uhchat (test lặp lại
+     nhiều lần đều tái hiện, không phải flaky) — script này có vẻ phụ thuộc
+     đúng thời điểm/thứ tự thực thi ban đầu. Chỉ đổi VỊ TRÍ (không còn chặn
+     parse phần <body> phía trên), không đổi CÁCH tải. -->
 <!-- ========================== /TRACKING ============================ -->
 </head>
 <body>
@@ -131,7 +141,7 @@ a.load=function(b,d)
             <option>Đầu tư</option>
             <option>Cho thuê</option>
           </select>
-          <button type="submit" class="btn btn-gold">Nhận tài liệu tư vấn</button>
+          <button type="submit" class="btn btn-gold">Nhận bảng giá &amp; ưu đãi 16.5%</button>
         </div>
         <!-- Honeypot chống bot, xem chú thích tương tự ở #contactForm. -->
         <div class="hp-field" aria-hidden="true">
@@ -245,6 +255,14 @@ a.load=function(b,d)
     </div>
   </div>
 </section>
+
+<!-- ============ CTA: SAU VỊ TRÍ ============ -->
+<div class="midpage-cta">
+  <div class="container midpage-cta-inner">
+    <p class="midpage-cta-text">Vị trí kết nối khu Đông là yếu tố nhiều nhà đầu tư ưu tiên hàng đầu.</p>
+    <a href="#lien-he" class="btn btn-gold">Nhận bảng giá &amp; ưu đãi 16.5%</a>
+  </div>
+</div>
 
 <!-- ============ HẠ TẦNG GIAO THÔNG ============ -->
 <!-- Ảnh đã có sẵn số liệu và chú thích (đô thị Resort & TOD, khu thể thao
@@ -404,6 +422,14 @@ a.load=function(b,d)
   <img src="images/amenities/amenity-bg.webp" alt="Không gian tiện ích Palm River" loading="lazy">
 </section>
 
+<!-- ============ CTA: SAU TIỆN ÍCH ============ -->
+<div class="midpage-cta">
+  <div class="container midpage-cta-inner">
+    <p class="midpage-cta-text">Trải nghiệm hệ tiện ích thực tế trước khi quyết định.</p>
+    <a href="#lien-he" class="btn btn-gold">Đặt lịch tham quan thực tế</a>
+  </div>
+</div>
+
 <!-- ============ GALLERY ============ -->
 <section class="section section-white" id="gallery">
   <div class="container">
@@ -483,6 +509,14 @@ a.load=function(b,d)
   </div>
 </section>
 
+<!-- ============ CTA: SAU MẶT BẰNG ============ -->
+<div class="midpage-cta">
+  <div class="container midpage-cta-inner">
+    <p class="midpage-cta-text">Xem chi tiết mặt bằng và quỹ căn còn trống theo từng loại hình.</p>
+    <a href="#lien-he" class="btn btn-gold">Nhận mặt bằng chi tiết</a>
+  </div>
+</div>
+
 <!-- ============ APARTMENT INTERIORS ============ -->
 <section class="section section-cream" id="noi-that-can-ho">
   <div class="container">
@@ -555,6 +589,14 @@ a.load=function(b,d)
     </div>
   </div>
 </section>
+
+<!-- ============ CTA: SAU CHỦ ĐẦU TƯ ============ -->
+<div class="midpage-cta">
+  <div class="container midpage-cta-inner">
+    <p class="midpage-cta-text">Hướng Việt Properties đã bàn giao hơn 31.800 căn hộ trên cả nước.</p>
+    <a href="#lien-he" class="btn btn-gold">Nhận hồ sơ pháp lý dự án</a>
+  </div>
+</div>
 
 <!-- ============ TẠI SAO SỞ HỮU PALM RIVER ============ -->
 <section class="section section-cream" id="tai-sao-chon">
@@ -706,7 +748,7 @@ a.load=function(b,d)
         </div>
         <p class="offer-note" data-offer-note></p>
       </div>
-      <button type="submit" class="btn btn-gold btn-block">Nhận bảng giá &amp; đặt lịch tư vấn</button>
+      <button type="submit" class="btn btn-gold btn-block">Nhận bảng giá &amp; ưu đãi 16.5%</button>
       <p class="form-success" id="formSuccess">Đã ghi nhận thông tin, cảm ơn bạn! Đội ngũ tư vấn sẽ liên hệ trong thời gian sớm nhất.</p>
       <!-- partner:cut -->
       <p class="form-hint">Khi gửi thông tin, bạn đồng ý để chúng tôi liên hệ tư vấn và đồng ý với <a href="chinh-sach-bao-mat">Chính sách bảo mật</a>.</p>
@@ -779,6 +821,14 @@ a.load=function(b,d)
   var lastSent=0;
   function send(form){
     try{
+      // Nhánh click bên dưới bắn 300ms sau MỌI click vào nút submit, kể cả
+      // khi form đang thiếu trường bắt buộc/sai định dạng và trình duyệt
+      // chặn submit thật (không có toast báo lỗi nào cho LeadHub biết) -
+      // dẫn tới gửi cả những lượt bấm chưa hợp lệ. Chặn ở đây, chung cho
+      // cả 2 nhánh gọi send().
+      if (form && form.checkValidity && !form.checkValidity()) {
+        console.log('[LeadHub] form chưa hợp lệ, skip'); return;
+      }
       var now=Date.now(); if(now-lastSent<3000) return; // chống double-fire
       var data={}, els=(form||document).querySelectorAll('input,select,textarea');
       for(var i=0;i<els.length;i++){ if(els[i].name && els[i].value) data[els[i].name]=els[i].value; }
@@ -819,5 +869,12 @@ a.load=function(b,d)
 })();
 </script>
 <!-- ============ /LEADHUB CRM ============ -->
+
+<!-- uhchat: dòng cao tầng — chuyển xuống cuối body thay vì đầu head, để toàn
+     bộ nội dung trang parse/render trước, không còn bị 1 script bên thứ 3
+     chặn ngay từ đầu trang. Giữ nguyên dạng tải đồng bộ (không defer/async)
+     vì đã test defer và tải trễ qua JS đều gây lỗi runtime bên trong script
+     uhchat — xem chú thích ở đầu head, chỗ script này từng đứng. -->
+<script src="https://uhchat.net/code.php?f=e76136"></script>
 </body>
 </html>

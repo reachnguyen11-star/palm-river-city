@@ -17,7 +17,7 @@
     // Để mảng rỗng [] nếu chưa chốt số — khi đó chỉ còn tiêu đề và bộ đếm.
     uuDai: [
       { nhan: 'Chiết khấu đến', so: '16.5%' },
-      { nhan: 'Vốn ban đầu chỉ', so: '10%' },
+      { nhan: 'Tổng giá căn chỉ từ', so: '5.5 tỷ' },
     ],
 
     ghiChu: 'Áp dụng đến hết ngày {ngay}',
