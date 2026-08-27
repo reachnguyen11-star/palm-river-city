@@ -836,6 +836,9 @@ p strong{color:var(--ink);}
      padding ngang riêng, dùng được luôn cho mobile không cần override thêm —
      chỉ hạ bớt khoảng cách đáy vì màn hình thấp hơn. */
   .hero-cta-wrap{bottom:2.5vh;}
+  /* Ảnh mobile là crop dọc riêng (941x1672), không phải ảnh desktop scale
+     xuống, nên cần đổi hẳn nguồn ảnh thay vì chỉ đổi background-position. */
+  .hero-bg{background-image:url('../images/hero-mobile.webp');}
   .hero-quick-form{padding:1.2rem 1.2rem 1.1rem;}
   /* 2 cột (tên+sđt, dropdown+nút) quá chật trên màn hẹp, chữ trong select
      bị cắt — xếp dọc thay vì ép ngang. */
