@@ -234,8 +234,12 @@ p strong{color:var(--ink);}
 /* ============ HERO ============ */
 .hero{
   position:relative;min-height:100vh;min-height:100dvh;display:flex;align-items:center;
-  overflow:hidden;color:#fff;
+  overflow:hidden;color:#fff;background:var(--forest);
 }
+/* Mặc định (desktop): .hero-media phủ kín .hero, .hero-bg/.hero-scrim bên
+   trong absolute theo .hero-media như trước — hành vi giống hệt lúc chưa
+   tách wrapper riêng. Mobile override toàn bộ khối này, xem @media 620px. */
+.hero-media{position:absolute;inset:0;}
 .hero-bg{
   position:absolute;inset:0;background-size:cover;background-position:center center;
   background-image:url('../images/hero-pc.webp');
@@ -815,16 +819,22 @@ p strong{color:var(--ink);}
   .offer-cd{gap:.4rem;}
   .cd-unit{min-width:0;flex:1 1 0;}
   .cd-num{font-size:1.4rem;}
-  /* Bản desktop giờ lệch trái + neo theo top% (theo bố cục ảnh desktop) —
-     không hợp với ảnh mobile (crop dọc, bố cục khác hẳn), nên override lại
-     về canh giữa + neo đáy như thiết kế mobile ban đầu. */
-  .hero-cta-wrap{
-    left:50%;top:auto;bottom:2.5vh;transform:translateX(-50%);
-    padding:0 1.2rem;
-  }
+  /* Trên mobile, ảnh nền hiện TRỌN VẸN 1 lần như 1 khối ảnh bình thường
+     (aspect-ratio đúng bằng tỉ lệ file hero-mobile.webp 941:1672), form nằm
+     NGAY DƯỚI theo dòng chảy trang — không còn form đè lên ảnh (absolute)
+     như bản desktop, vì ảnh dọc dễ bị cắt mất chữ/tháp khi ép vào 100dvh. */
+  .hero{min-height:auto;display:block;}
+  .hero-media{position:relative;inset:auto;width:100%;aspect-ratio:941/1672;}
   /* Ảnh mobile là crop dọc riêng (941x1672), không phải ảnh desktop scale
      xuống, nên cần đổi hẳn nguồn ảnh thay vì chỉ đổi background-position. */
   .hero-bg{background-image:url('../images/hero-mobile.webp');}
+  .hero-cta-wrap{
+    position:relative;left:auto;top:auto;bottom:auto;transform:none;
+    margin:1.5rem auto;padding:0 1.2rem;
+  }
+  /* Cue cuộn xuống thừa khi nội dung đã nằm sẵn trong dòng chảy, không còn
+     gì bị che khuất cần gợi ý cuộn tiếp. */
+  .scroll-cue{display:none;}
   .hero-quick-form{padding:1.2rem 1.2rem 1.1rem;}
   /* 2 cột (tên+sđt, dropdown+nút) quá chật trên màn hẹp, chữ trong select
      bị cắt — xếp dọc thay vì ép ngang. */

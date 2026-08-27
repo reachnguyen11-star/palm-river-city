@@ -112,9 +112,15 @@ a.load=function(b,d)
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-scrim"></div>
-  <div class="hero-cta-wrap reveal">
+  <!-- .hero-media bọc riêng ảnh nền + lớp phủ, để trên mobile có thể tách
+       thành khối ảnh hiện trọn vẹn (aspect-ratio) rồi tới form nằm NGAY
+       DƯỚI theo dòng chảy bình thường, thay vì form đè lên ảnh như bản
+       desktop. Xem @media 620px trong style.css. -->
+  <div class="hero-media">
+    <div class="hero-bg"></div>
+    <div class="hero-scrim"></div>
+  </div>
+  <div class="hero-cta-wrap">
     <!-- Form thu lead nhanh ngay trong hero, thay cho popup đã bỏ (xem
          js/main.js). Cùng cơ chế gửi CRM + chống bot với #contactForm. -->
     <div class="hero-quick-form">
