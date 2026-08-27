@@ -307,17 +307,29 @@ p strong{color:var(--ink);}
   flex-wrap:wrap;text-align:center;padding:1.5rem 0;
 }
 .midpage-cta-text{color:#dbe3d6;font-size:1rem;margin:0;}
-.midpage-cta .btn{flex-shrink:0;}
 /* Gửi thẳng tại chỗ thay vì cuộn xuống #lien-he — chỉ hỏi SĐT để giữ độ ma
    sát thấp đúng tinh thần "chặn ngang, tiện tay điền" của khối CTA giữa
-   trang, không phải form đầy đủ như form cuối trang. */
-.midpage-cta-form{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;}
+   trang, không phải form đầy đủ như form cuối trang.
+   flex-wrap:nowrap (không phải wrap) + input co giãn (flex thay vì width
+   cố định 200px) để ô SĐT và nút luôn nằm chung 1 hàng kể cả trên màn hình
+   hẹp nhất, thay vì rớt xuống 2 dòng như trước. */
+.midpage-cta-form{
+  display:flex;gap:.6rem;flex-wrap:nowrap;justify-content:center;
+  width:100%;max-width:420px;margin:0 auto;
+}
 .midpage-cta-form input{
-  width:200px;padding:.7rem .9rem;border:1px solid rgba(255,255,255,.2);border-radius:2px;
-  background:rgba(255,255,255,.07);color:#fff;font-family:var(--font-body);font-size:.9rem;
+  flex:0 1 120px;min-width:70px;padding:.7rem .7rem;border:1px solid rgba(255,255,255,.2);border-radius:2px;
+  background:rgba(255,255,255,.07);color:#fff;font-family:var(--font-body);font-size:.85rem;
 }
 .midpage-cta-form input::placeholder{color:#9aa89a;}
 .midpage-cta-form input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.12);}
+/* Nút chiếm phần còn lại của hàng (input đã cố định ~120px) - chữ được
+   phép xuống dòng (không nowrap) vì có nút dài tới 5-6 từ, để không phải
+   thu font quá nhỏ mới vừa 1 dòng. */
+.midpage-cta .btn{
+  flex:1 1 auto;min-width:0;padding:.7rem .8rem;font-size:.8rem;
+  white-space:normal;line-height:1.25;text-align:center;
+}
 
 /* ============ SECTIONS ============ */
 .section{padding:5.5rem 0;position:relative;}
